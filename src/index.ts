@@ -1,33 +1,17 @@
-//middleware
+//should be server (confused) but this regarded as a server configuration where as if u go to server.ts
 import "reflect-metadata";
+import { AppDataSource } from "./config/.ormconfig.js";
 import express from "express";
 import dotenv from "dotenv";
-import { DataSource } from "typeorm";
-import { User } from "./models/User.js";
-import { Product } from "./models/Product.js";
-import { Order } from "./models/Order.js";
-
+import router from "./routes/auth.routes.js";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use("/api", router);
 
-// TODO: add your routes here
-
-console.log("env files are", process.env.DB_NAME, process.env.DB_PASSWORD);
-
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  synchronize: false,
-  logging: true,
-  entities: [User, Product, Order],
-})
-  .initialize()
+// routes to be changed into routes folder
+AppDataSource.initialize()
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error:", err));
 
