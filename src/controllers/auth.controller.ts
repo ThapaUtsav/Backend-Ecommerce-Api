@@ -1,3 +1,5 @@
+//POSTMAN
+
 import { Request, Response } from "express";
 import { AppDataSource } from "config/.ormconfig.js";
 import { User } from "models/User.js";
