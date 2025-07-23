@@ -4,11 +4,23 @@ import { AppDataSource } from "./config/.ormconfig.js";
 import express from "express";
 import dotenv from "dotenv";
 import router from "./routes/auth.routes.js";
+import dashRoutes from "./routes/protected.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import prodRoutes from "./routes/product.routes.js";
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use("/api", router);
+
+//same output to both just showing the routes for now
+app.use("/api", userRoutes);
+app.use("/api", dashRoutes);
+
+//for products
+app.use("/api/product", prodRoutes);
+
 import logger from "utils/logger.js";
 
 // routes to be changed into routes folder
