@@ -1,22 +1,28 @@
-[2025-07-23T08:04:16.802Z] INFO: DB connected
-[2025-07-23T08:09:24.339Z] INFO: Server running on port 3000
-[2025-07-23T08:09:24.499Z] INFO: DB connected
-[2025-07-23T08:11:13.385Z] INFO: DB connected
-[2025-07-23T09:01:22.052Z] INFO: DB connected
-[2025-07-23T09:03:34.324Z] INFO: DB connected
-[2025-07-23T09:03:56.717Z] INFO: Server running on port 3000
-[2025-07-23T09:03:56.769Z] INFO: DB connected
-[2025-07-23T09:27:21.725Z] INFO: Server running on port 3000
-[2025-07-23T09:27:21.781Z] INFO: DB connected
-[2025-07-23T09:30:52.039Z] INFO: Server running on port 3000
-[2025-07-23T09:30:52.216Z] INFO: DB connected
-[2025-07-23T09:47:28.154Z] INFO: Server running on port 3000
-[2025-07-23T09:47:28.205Z] INFO: DB connected
-[2025-07-23T10:29:02.402Z] INFO: Server running on port 3000
-[2025-07-23T10:29:02.459Z] INFO: DB connected
-[2025-07-23T10:41:05.963Z] INFO: Server running on port 3000
-[2025-07-23T10:41:06.129Z] INFO: DB connected
-[2025-07-23T10:59:40.187Z] INFO: Server running on port 3000
-[2025-07-23T10:59:40.348Z] INFO: DB connected
-[2025-07-23T11:01:28.540Z] INFO: Server running on port 3000
-[2025-07-23T11:01:28.696Z] INFO: DB connected
+[2025-07-24T07:41:59.742Z] INFO: Server running on port 3000
+[2025-07-24T07:41:59.798Z] INFO: DB connected
+[2025-07-24T07:42:04.210Z] WARN: Product not found: ID 3
+[2025-07-24T07:42:26.193Z] INFO: Server running on port 3000
+[2025-07-24T07:42:26.349Z] INFO: DB connected
+[2025-07-24T07:42:28.802Z] WARN: Product not found: ID 3
+[2025-07-24T07:43:13.907Z] INFO: Server running on port 3000
+[2025-07-24T07:43:13.963Z] INFO: DB connected
+[2025-07-24T07:45:17.322Z] INFO: Server running on port 3000
+[2025-07-24T07:45:17.385Z] INFO: DB connected
+[2025-07-24T07:45:44.682Z] INFO: Server running on port 3000
+[2025-07-24T07:45:44.754Z] INFO: DB connected
+[2025-07-24T07:46:02.481Z] INFO: Server running on port 3000
+[2025-07-24T07:46:02.632Z] INFO: DB connected
+[2025-07-24T07:49:53.575Z] INFO: Server running on port 3000
+[2025-07-24T07:49:53.639Z] INFO: DB connected
+[2025-07-24T07:54:17.159Z] INFO: Server running on port 3000
+[2025-07-24T07:54:17.336Z] INFO: DB connected
+[2025-07-24T07:56:34.380Z] INFO: Server running on port 3000
+[2025-07-24T07:56:34.452Z] INFO: DB connected
+[2025-07-24T07:59:17.699Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-24T07:59:35.741Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-24T07:59:55.558Z] INFO: {"email":"user@example.com","password":"mypassword"}:Used Dashboard
+[2025-07-24T08:00:30.727Z] ERROR: Error creating product: malformed array literal: "https://example.com/images/keyboard-front.jpg,https://example.com/images/keyboard-back.jpg"
+[2025-07-24T08:00:57.077Z] ERROR: Error creating product: malformed array literal: ""
+[2025-07-24T08:02:11.708Z] INFO: Server running on port 3000
+[2025-07-24T08:02:25.049Z] INFO: Server running on port 3000
+[2025-07-24T08:03:15.414Z] WARN: Product not found: ID 2

@@ -5,7 +5,10 @@ export const productCreationSchema = z.object({
   description: z.string().optional(),
   price: z.number().positive("Price must be a positive number"),
   category: z.string().optional(),
-  stock: z.number().int().nonnegative("Stock must be a non-negative integer"),
+  inventory: z
+    .number()
+    .int()
+    .nonnegative("Stock must be a non-negative integer"),
   images: z.array(z.url()).optional(),
 });
 
@@ -13,5 +16,5 @@ export const productSchema = z.object({
   name: z.string().min(1),
   price: z.number().positive(),
   description: z.string().optional(),
-  stock: z.number().int().nonnegative(),
+  inventory: z.number().int().nonnegative(),
 });

@@ -6,9 +6,17 @@ import {
   userLoginSchema,
 } from "../validators/user.validation.js";
 
+import logger from "utils/logger.js";
+
 const router = Router();
 
-router.post("/register", validateBody(userRegistrationSchema), registerUser);
-router.post("/login", validateBody(userLoginSchema), loginUser);
+router.post("/register", validateBody(userRegistrationSchema), (req, res) => {
+  logger.info(`User registration attempt:${JSON.stringify(req.body)}`);
+  registerUser(req, res);
+});
+router.post("/login", validateBody(userLoginSchema), (req, res) => {
+  logger.info(`User login attempt: ${JSON.stringify(req.body)}`);
+  loginUser(req, res);
+});
 
 export default router;

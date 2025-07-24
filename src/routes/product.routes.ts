@@ -30,5 +30,4 @@ router.put(
   updateProduct
 );
 router.delete("/:id", authenticateToken, deleteProduct);
-
 export default router;

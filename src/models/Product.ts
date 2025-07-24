@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity()
+@Entity("products")
 export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -21,18 +21,18 @@ export class Product {
   @Column("decimal")
   price!: number;
 
-  @Column({ type: "varchar" })
-  category!: string;
+  @Column({ type: "varchar", nullable: true })
+  category?: string;
 
   @Column("int")
-  stock!: number;
+  inventory!: number;
 
   @Column("simple-array") //for images
   images!: string[];
 
   @CreateDateColumn()
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updated_at!: Date;
 }

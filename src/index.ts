@@ -19,9 +19,7 @@ app.use("/api", userRoutes);
 app.use("/api", dashRoutes);
 
 //for products
-app.use("/api/product", prodRoutes);
-
-import logger from "utils/logger.js";
+app.use("/api/products", prodRoutes);
 
 // routes to be changed into routes folder
 // AppDataSource.initialize()
@@ -32,9 +30,9 @@ import logger from "utils/logger.js";
 const connectdb = async () => {
   try {
     await AppDataSource.initialize();
-    logger.info("DB connected");
+    console.log("DB connected");
   } catch (err) {
-    logger.info("Db connection error:", err);
+    console.log("Db connection error:", err);
     process.exit(1);
   }
 };
