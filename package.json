@@ -34,7 +34,7 @@
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.25",
     "winston": "^3.17.0",
-    "zod": "^4.0.5"
+    "zod": "^4.0.10"
   },
   "devDependencies": {
     "@eslint/css": "^0.10.0",

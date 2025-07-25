@@ -30,6 +30,15 @@ export class Product {
   @Column("simple-array") //for images
   images!: string[];
 
+  @Column({ nullable: true, type: "varchar" })
+  color?: string;
+
+  @Column({ nullable: true, type: "varchar" })
+  size?: number;
+
+  @Column({ nullable: true, type: "varchar" })
+  brand?: string;
+
   @CreateDateColumn()
   created_at!: Date;
 

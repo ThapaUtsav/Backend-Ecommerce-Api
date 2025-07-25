@@ -18,7 +18,7 @@ export class User {
   password!: string;
 
   @Column({ default: "customer", type: "varchar" })
-  role!: string;
+  role!: "admin" | "customer";
 
   @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;

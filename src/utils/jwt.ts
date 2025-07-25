@@ -1,10 +1,24 @@
-import jwt from "jsonwebtoken";
-const JWT_secret = process.env.JWT_secret || "a";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-export const generateToken = (payload: object) => {
-  // return jwt.sign(payload, JWT_secret, { expiresIn });
-  return jwt.sign(payload, JWT_secret, { expiresIn: "1h" });
+const JWT_SECRET = process.env.JWT_secret || "a";
+
+// Adding admins
+export interface AuthTokenPayload extends JwtPayload {
+  id: number;
+  role: "admin" | "customer";
+}
+
+export const generateToken = (payload: AuthTokenPayload): string => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
 };
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, JWT_secret);
+
+// Verify
+export const verifyToken = (token: string): AuthTokenPayload => {
+  const decoded = jwt.verify(token, JWT_SECRET);
+
+  if (typeof decoded === "object" && "id" in decoded && "role" in decoded) {
+    return decoded as AuthTokenPayload;
+  }
+
+  throw new Error("Invalid token payload structure");
 };

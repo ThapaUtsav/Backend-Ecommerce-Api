@@ -9,7 +9,7 @@ import {
 
 const productRepo = AppDataSource.getRepository(Product);
 
-//product creation part(Validation,Logging)
+// PRODUCT CREATION
 export const createProduct = async (req: Request, res: Response) => {
   const validation = productCreationSchema.safeParse(req.body);
 
@@ -35,19 +35,65 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
-//Search all products(VALidation and logging)
-export const getAllProducts = async (_req: Request, res: Response) => {
+// GET ALL PRODUCTS + FILTERING
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await productRepo.find();
+    const query = req.query;
+    const qb = productRepo.createQueryBuilder("product");
+
+    // FILTERS
+    Object.entries(query).forEach(([key, value]) => {
+      if (typeof value !== "string") return;
+      const cleanValue = value.trim();
+
+      const match = key.match(/(price|inventory)_(gt|lt)/);
+      if (match) {
+        const [, field, operator] = match;
+        const dbOpMap: Record<string, string> = {
+          gt: ">",
+          lt: "<",
+        };
+        qb.andWhere(`product.${field} ${dbOpMap[operator]} :${key}`, {
+          [key]: Number(cleanValue),
+        });
+      }
+
+      // Partial matches
+      if (["name", "category", "brand", "color"].includes(key)) {
+        qb.andWhere(`LOWER(product.${key}) LIKE LOWER(:${key})`, {
+          [key]: `%${cleanValue}%`,
+        });
+      }
+    });
+
+    // SORTING
+    if (typeof query.sort === "string") {
+      const [field, dirRaw] = query.sort.split("_");
+      const direction = dirRaw.toLowerCase();
+
+      if (
+        ["price", "inventory", "size"].includes(field) &&
+        ["asc", "desc"].includes(direction)
+      ) {
+        qb.orderBy(
+          `product.${field}`,
+          direction.toUpperCase() as "ASC" | "DESC"
+        );
+      }
+    }
+
+    console.log("Generated SQL:", qb.getSql());
+
+    const products = await qb.getMany();
     res.json(products);
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error("Error fetching products", { error: err });
-    res.status(500).json({ message: "Error fetching products" });
+    return res.status(500).json({ message: "Error fetching products" });
   }
 };
 
-//search by product ID(might change,validation adn loggin)
+// GET PRODUCT BY ID
 export const getProductById = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
@@ -64,11 +110,11 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-//update of product and then (validation and loggin)
+// UPDATE PRODUCT
 export const updateProduct = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-
   const validation = productSchema.safeParse(req.body);
+
   if (!validation.success) {
     logger.error(
       `Validation failed on product update (ID: ${id}): ${JSON.stringify(
@@ -76,7 +122,6 @@ export const updateProduct = async (req: Request, res: Response) => {
       )}`,
       validation.error
     );
-    //error shows in logs\error.log
     return res.status(400).json({
       message: "Validation error",
       errors: validation.error,
@@ -101,7 +146,8 @@ export const updateProduct = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error updating product" });
   }
 };
-//Deletion of product(loggin and validation inside)
+
+// DELETE PRODUCT
 export const deleteProduct = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
