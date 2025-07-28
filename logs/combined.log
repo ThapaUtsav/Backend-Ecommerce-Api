@@ -1,0 +1,77 @@
+[2025-07-24T07:41:59.742Z] INFO: Server running on port 3000
+[2025-07-24T07:41:59.798Z] INFO: DB connected
+[2025-07-24T07:42:04.210Z] WARN: Product not found: ID 3
+[2025-07-24T07:42:26.193Z] INFO: Server running on port 3000
+[2025-07-24T07:42:26.349Z] INFO: DB connected
+[2025-07-24T07:42:28.802Z] WARN: Product not found: ID 3
+[2025-07-24T07:43:13.907Z] INFO: Server running on port 3000
+[2025-07-24T07:43:13.963Z] INFO: DB connected
+[2025-07-24T07:45:17.322Z] INFO: Server running on port 3000
+[2025-07-24T07:45:17.385Z] INFO: DB connected
+[2025-07-24T07:45:44.682Z] INFO: Server running on port 3000
+[2025-07-24T07:45:44.754Z] INFO: DB connected
+[2025-07-24T07:46:02.481Z] INFO: Server running on port 3000
+[2025-07-24T07:46:02.632Z] INFO: DB connected
+[2025-07-24T07:49:53.575Z] INFO: Server running on port 3000
+[2025-07-24T07:49:53.639Z] INFO: DB connected
+[2025-07-24T07:54:17.159Z] INFO: Server running on port 3000
+[2025-07-24T07:54:17.336Z] INFO: DB connected
+[2025-07-24T07:56:34.380Z] INFO: Server running on port 3000
+[2025-07-24T07:56:34.452Z] INFO: DB connected
+[2025-07-24T07:59:17.699Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-24T07:59:35.741Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-24T07:59:55.558Z] INFO: {"email":"user@example.com","password":"mypassword"}:Used Dashboard
+[2025-07-24T08:00:30.727Z] ERROR: Error creating product: malformed array literal: "https://example.com/images/keyboard-front.jpg,https://example.com/images/keyboard-back.jpg"
+[2025-07-24T08:00:57.077Z] ERROR: Error creating product: malformed array literal: ""
+[2025-07-24T08:02:11.708Z] INFO: Server running on port 3000
+[2025-07-24T08:02:25.049Z] INFO: Server running on port 3000
+[2025-07-24T08:03:15.414Z] WARN: Product not found: ID 2
+[2025-07-25T04:18:49.887Z] INFO: Server running on port 3000
+[2025-07-25T04:19:44.625Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-25T04:20:02.567Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-25T04:23:20.653Z] INFO: Server running on port 3000
+[2025-07-25T04:23:36.698Z] INFO: Server running on port 3000
+[2025-07-25T04:25:08.525Z] INFO: {"email":"user@example.com","password":"mypassword"}:Used Dashboard
+[2025-07-25T04:25:53.313Z] INFO: Server running on port 3000
+[2025-07-25T04:40:25.752Z] INFO: Server running on port 3000
+[2025-07-25T04:45:40.085Z] INFO: Server running on port 3000
+[2025-07-25T04:45:44.251Z] INFO: Server running on port 3000
+[2025-07-25T04:47:07.936Z] INFO: Server running on port 3000
+[2025-07-25T04:47:28.805Z] INFO: Server running on port 3000
+[2025-07-25T05:13:57.454Z] INFO: Server running on port 3000
+[2025-07-25T05:14:17.237Z] INFO: Server running on port 3000
+[2025-07-25T05:15:05.795Z] INFO: Server running on port 3000
+[2025-07-25T05:15:22.427Z] INFO: Server running on port 3000
+[2025-07-25T05:15:27.999Z] INFO: Server running on port 3000
+[2025-07-25T05:15:39.681Z] INFO: Server running on port 3000
+[2025-07-25T05:15:51.337Z] INFO: Server running on port 3000
+[2025-07-25T05:21:14.991Z] INFO: Server running on port 3000
+[2025-07-25T05:22:28.257Z] INFO: Server running on port 3000
+[2025-07-25T05:29:35.809Z] INFO: Server running on port 3000
+[2025-07-25T05:47:52.965Z] INFO: Server running on port 3000
+[2025-07-25T05:50:25.773Z] INFO: User login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-25T05:53:50.450Z] INFO: User registration attempt:{"email":"admin@example.com","password":"mypassword","role":"admin"}
+[2025-07-25T05:54:02.867Z] INFO: User registration attempt:{"email":"admin@example.com","password":"mypassword","role":"admin"}
+[2025-07-25T05:54:06.870Z] INFO: User login attempt: {"email":"admin@example.com","password":"mypassword","role":"admin"}
+[2025-07-25T05:57:28.432Z] INFO: Server running on port 3000
+[2025-07-25T06:01:11.130Z] INFO: Server running on port 3000
+[2025-07-25T08:34:23.129Z] INFO: Server running on port 3000
+[2025-07-25T08:34:45.455Z] INFO: User login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-07-25T08:43:13.550Z] INFO: Server running on port 3000
+[2025-07-25T09:09:21.996Z] INFO: Server running on port 3000
+[2025-07-25T09:11:51.735Z] INFO: Server running on port 3000
+[2025-07-25T09:14:29.400Z] INFO: Server running on port 3000
+[2025-07-25T09:16:36.329Z] INFO: {"name":"Xiaomi Redmi Note 13","description":"Xiaomi Redmi Note 13.Gorillaz Screen,8 inch screen,75hz monitor","category":"Electronics","price":80,"inventory":50,"color":"Blue","size":6,"brand":"Xiaomi"}:Used Dashboard
+[2025-07-25T09:19:04.472Z] INFO: Server running on port 3000
+[2025-07-25T09:24:13.493Z] INFO: Server running on port 3000
+[2025-07-25T09:27:41.208Z] INFO: Server running on port 3000
+[2025-07-25T09:29:58.671Z] INFO: Server running on port 3000
+[2025-07-25T09:31:24.865Z] INFO: Server running on port 3000
+[2025-07-25T09:32:30.643Z] WARN: Product not found: ID 1
+[2025-07-25T10:24:37.600Z] INFO: Server running on port 3000
+[2025-07-28T08:32:11.065Z] INFO: Server running on port 3000
+[2025-07-28T11:35:57.725Z] INFO: Server running on port 3000
+[2025-07-28T11:37:31.993Z] INFO: User login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-07-28T11:56:03.757Z] WARN: Product not found: ID 1
+[2025-07-28T11:56:06.070Z] WARN: Product not found: ID 2
+[2025-07-28T11:56:08.845Z] WARN: Product not found: ID 4
