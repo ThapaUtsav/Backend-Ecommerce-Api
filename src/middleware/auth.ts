@@ -18,7 +18,7 @@ export const authenticateToken = (
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Type narrowing: Ensure it's a JwtPayload with your expected fields
+    //Narrowing to JWTpayload
     if (typeof decoded === "object" && "id" in decoded && "role" in decoded) {
       req.user = decoded as JwtPayload & {
         id: number;

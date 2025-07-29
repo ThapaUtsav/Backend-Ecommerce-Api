@@ -1,15 +1,19 @@
 import { Request, Response } from "express";
-import { Product } from "../models/Product.js";
-import { AppDataSource } from "config/.ormconfig.js";
 import logger from "../utils/logger.js";
 import {
   productCreationSchema,
   productSchema,
 } from "../validators/product.validation.js";
 
-const productRepo = AppDataSource.getRepository(Product);
+import {
+  createProductService,
+  getAllProductsService,
+  getProductByIdService,
+  updateProductService,
+  deleteProductService,
+} from "../services/productservices.js";
 
-// PRODUCT CREATION
+// CREATE PRODUCT
 export const createProduct = async (req: Request, res: Response) => {
   const validation = productCreationSchema.safeParse(req.body);
 
@@ -25,8 +29,7 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    const newProduct = productRepo.create(validation.data);
-    const savedProduct = await productRepo.save(newProduct);
+    const savedProduct = await createProductService(validation.data);
     res.status(201).json(savedProduct);
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
@@ -35,56 +38,10 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
-// GET ALL PRODUCTS + FILTERING
+// GET ALL PRODUCTS
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const query = req.query;
-    const qb = productRepo.createQueryBuilder("product");
-
-    // FILTERS
-    Object.entries(query).forEach(([key, value]) => {
-      if (typeof value !== "string") return;
-      const cleanValue = value.trim();
-
-      const match = key.match(/(price|inventory)_(gt|lt)/);
-      if (match) {
-        const [, field, operator] = match;
-        const dbOpMap: Record<string, string> = {
-          gt: ">",
-          lt: "<",
-        };
-        qb.andWhere(`product.${field} ${dbOpMap[operator]} :${key}`, {
-          [key]: Number(cleanValue),
-        });
-      }
-
-      // Partial matches
-      if (["name", "category", "brand", "color"].includes(key)) {
-        qb.andWhere(`LOWER(product.${key}) LIKE LOWER(:${key})`, {
-          [key]: `%${cleanValue}%`,
-        });
-      }
-    });
-
-    // SORTING
-    if (typeof query.sort === "string") {
-      const [field, dirRaw] = query.sort.split("_");
-      const direction = dirRaw.toLowerCase();
-
-      if (
-        ["price", "inventory", "size"].includes(field) &&
-        ["asc", "desc"].includes(direction)
-      ) {
-        qb.orderBy(
-          `product.${field}`,
-          direction.toUpperCase() as "ASC" | "DESC"
-        );
-      }
-    }
-
-    console.log("Generated SQL:", qb.getSql());
-
-    const products = await qb.getMany();
+    const products = await getAllProductsService(req.query);
     res.json(products);
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
@@ -96,8 +53,9 @@ export const getAllProducts = async (req: Request, res: Response) => {
 // GET PRODUCT BY ID
 export const getProductById = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
+
   try {
-    const product = await productRepo.findOne({ where: { id } });
+    const product = await getProductByIdService(id);
     if (!product) {
       logger.warn(`Product not found: ID ${id}`);
       return res.status(404).json({ message: "Product not found" });
@@ -129,14 +87,11 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    const product = await productRepo.findOne({ where: { id } });
-    if (!product) {
+    const updatedProduct = await updateProductService(id, validation.data);
+    if (!updatedProduct) {
       logger.warn(`Product not found for update: ID ${id}`);
       return res.status(404).json({ message: "Product not found" });
     }
-
-    productRepo.merge(product, validation.data);
-    const updatedProduct = await productRepo.save(product);
     res.json(updatedProduct);
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
@@ -151,14 +106,14 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
-    const product = await productRepo.findOne({ where: { id } });
-    if (!product) {
+    const deletedProduct = await deleteProductService(id);
+    if (!deletedProduct) {
       logger.warn(`Product not found for deletion: ID ${id}`);
       return res.status(404).json({ message: "Product not found" });
     }
-
-    await productRepo.remove(product);
-    res.status(200).json({ message: "Product deleted", product });
+    res
+      .status(200)
+      .json({ message: "Product deleted", product: deletedProduct });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error(`Error deleting product ID ${id}: ${err.message}`, {

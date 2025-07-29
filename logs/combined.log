@@ -68,3 +68,12 @@
 [2025-07-25T09:29:58.671Z] INFO: Server running on port 3000
 [2025-07-25T09:31:24.865Z] INFO: Server running on port 3000
 [2025-07-25T09:32:30.643Z] WARN: Product not found: ID 1
+[2025-07-25T10:24:37.600Z] INFO: Server running on port 3000
+[2025-07-28T08:32:11.065Z] INFO: Server running on port 3000
+[2025-07-28T11:35:57.725Z] INFO: Server running on port 3000
+[2025-07-28T11:37:31.993Z] INFO: User login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-07-28T11:56:03.757Z] WARN: Product not found: ID 1
+[2025-07-28T11:56:06.070Z] WARN: Product not found: ID 2
+[2025-07-28T11:56:08.845Z] WARN: Product not found: ID 4
+[2025-07-29T01:59:04.462Z] INFO: Server running on port 3000
+[2025-07-29T01:59:22.947Z] INFO: User login attempt: {"email":"admin@example.com","password":"mypassword"}
