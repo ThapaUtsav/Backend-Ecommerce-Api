@@ -9,7 +9,7 @@ export interface AuthTokenPayload extends JwtPayload {
 }
 
 export const generateToken = (payload: AuthTokenPayload): string => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "8h" });
 };
 
 // Verify

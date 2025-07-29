@@ -15,7 +15,12 @@ router.post("/register", validateBody(userRegistrationSchema), (req, res) => {
   registerUser(req, res);
 });
 router.post("/login", validateBody(userLoginSchema), (req, res) => {
-  logger.info(`User login attempt: ${JSON.stringify(req.body)}`);
+  // logger.info(`User login attempt: ${JSON.stringify(req.body)}`);
+  if (req.body && req.body.role !== "customer") {
+    logger.info(`Admin login attempt: ${JSON.stringify(req.body)}`);
+  } else {
+    logger.info(`User login attempt: ${JSON.stringify(req.body)}`);
+  }
   loginUser(req, res);
 });
 
