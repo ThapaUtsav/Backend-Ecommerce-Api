@@ -6,6 +6,7 @@ export const userRegistrationSchema = z.object({
   role: z.enum(["customer", "admin"]).optional().default("customer"),
 });
 
+//update check
 export const userLoginSchema = z.object({
   email: z.email().nonempty("Email is required"),
   password: z.string().nonempty("Password is required"),
