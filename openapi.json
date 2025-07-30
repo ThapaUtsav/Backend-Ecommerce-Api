@@ -1,67 +1,91 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Ecommerce API",
-    "description": "API for managing products, orders, and users",
-    "version": "1.0.0"
+    "title": "Secure E-commerce API",
+    "version": "1.0.0",
+    "description": "A RESTful e-commerce API with authentication, product management, and order processing."
   },
   "servers": [
     {
-      "url": "https://api.myecommerce.com"
+      "url": "http://localhost:3000"
     }
   ],
   "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User registered" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
     "/products": {
       "get": {
+        "summary": "Get all products with filters",
         "tags": ["Products"],
-        "summary": "List or search products",
-        "description": "Returns a list of products. Supports filtering by name, price range, and sorting.",
         "parameters": [
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
           {
-            "name": "name",
+            "name": "price_min",
             "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter by product name (supports partial match)"
+            "schema": { "type": "number" }
           },
           {
-            "name": "sort",
+            "name": "price_max",
             "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Sort by field (e.g., 'price_asc', 'price_desc', 'name_asc')"
+            "schema": { "type": "number" }
           },
-          {
-            "name": "minPrice",
-            "in": "query",
-            "schema": {
-              "type": "number",
-              "format": "float"
-            },
-            "description": "Minimum price filter"
-          },
-          {
-            "name": "maxPrice",
-            "in": "query",
-            "schema": {
-              "type": "number",
-              "format": "float"
-            },
-            "description": "Maximum price filter"
-          }
+          { "name": "page", "in": "query", "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } }
         ],
         "responses": {
           "200": {
-            "description": "Filtered list of products",
+            "description": "List of products",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Product"
-                  }
+                  "items": { "$ref": "#/components/schemas/Product" }
                 }
               }
             }
@@ -69,132 +93,151 @@
         }
       },
       "post": {
+        "summary": "Create product (Admin only)",
         "tags": ["Products"],
-        "summary": "Create a new product",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "price": { "type": "number" },
+                  "category": { "type": "string" },
+                  "images": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  },
+                  "stock": { "type": "integer" }
+                },
+                "required": ["name", "price"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Product created" },
+          "403": { "description": "Admin only" }
+        }
+      }
+    },
+    "/products/{id}": {
+      "patch": {
+        "summary": "Update product inventory",
+        "tags": ["Products"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProductInput"
+                "type": "object",
+                "properties": {
+                  "stock": { "type": "integer" }
+                }
               }
             }
           }
         },
         "responses": {
-          "20": {
-            "description": "Product created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Product"
-                }
-              }
-            }
-          }
+          "200": { "description": "Inventory updated" },
+          "404": { "description": "Product not found" }
         }
       }
     },
-    "/products/{productId}": {
-      "get": {
-        "tags": ["Products"],
-        "summary": "Get product by ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "productId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The ID of the product to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Product"
-                }
+    "/orders": {
+      "post": {
+        "summary": "Create an order",
+        "tags": ["Orders"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productId": { "type": "string" },
+                        "quantity": { "type": "integer" }
+                      },
+                      "required": ["productId", "quantity"]
+                    }
+                  },
+                  "address": { "type": "string" }
+                },
+                "required": ["items"]
               }
             }
-          },
-          "404": {
-            "description": "Product not found"
           }
+        },
+        "responses": {
+          "201": { "description": "Order created" },
+          "400": { "description": "Bad request" }
         }
       }
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
+      "UserInput": {
+        "type": "object",
+        "description": "This is for registration of customer role basically default",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "example": "root" },
+          "role": {
+            "type": "string",
+            "enum": ["customer", "admin"],
+            "default": "customer"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "LoginInput": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
       "Product": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "123"
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number" },
+          "category": { "type": "string" },
+          "images": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
           },
-          "name": {
-            "type": "string",
-            "example": "Cool T-Shirt"
-          },
-          "price": {
-            "type": "number",
-            "format": "float",
-            "example": 19.99
-          },
-          "description": {
-            "type": "string",
-            "example": "A very cool t-shirt"
-          },
-          "inventory": {
-            "type": "boolean",
-            "example": true
-          },
-          "color": {
-            "type": "string",
-            "example": "red"
-          },
-          "size": {
-            "type": "number",
-            "example": 42
-          },
-          "brand": {
-            "type": "string",
-            "example": "BrandName"
-          }
+          "stock": { "type": "integer" }
         }
-      },
-      "ProductInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "price": {
-            "type": "number",
-            "format": "float"
-          },
-          "description": {
-            "type": "string"
-          },
-          "inventory": {
-            "type": "boolean"
-          },
-          "color": {
-            "type": "string"
-          },
-          "size": {
-            "type": "number"
-          },
-          "brand": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "price"]
       }
     }
   }

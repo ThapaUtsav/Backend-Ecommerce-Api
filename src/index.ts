@@ -9,23 +9,39 @@ import prodRoutes from "./routes/product.routes.js";
 import swaggerUi from "swagger-ui-express";
 import fs from "fs";
 import path from "path";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
+
+// Enable CORS **before** routes
+app.use(cors());
+
 app.use(express.json());
 app.use("/api", router);
 app.use("/api", userRoutes);
 app.use("/api", dashRoutes);
 app.use("/api/products", prodRoutes);
 
-// Load OpenAPI spec
+// Load OpenAPI spec from file once
 const openApiSpec = JSON.parse(
   fs.readFileSync(path.resolve("openapi.json"), "utf-8")
 );
+app.get("/swagger.json", cors(), (req, res) => {
+  res.json(openApiSpec);
+});
 
-// Serve Swagger UI at /api-docs
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+// Serve Swagger UI and configure it to fetch swagger.json from /swagger.json
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "http://localhost:3000/swagger.json", // Use full URL with protocol
+    },
+  })
+);
 
 const connectdb = async () => {
   try {
