@@ -12,7 +12,7 @@ export const productCreationSchema = z.object({
     .nonnegative("Stock must be a non-negative integer"),
   images: z.array(z.url()).optional(),
   color: z.string().min(3),
-  size: z.number().positive().optional(),
+  size: z.string().optional(),
   brand: z.string().optional(),
 });
 //updateschema
@@ -22,6 +22,6 @@ export const productSchema = z.object({
   description: z.string().optional(),
   inventory: z.number().int().nonnegative(),
   color: z.string().min(3),
-  size: z.number().positive().optional(),
+  size: z.string().optional(),
   brand: z.string().optional(),
 });

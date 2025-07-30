@@ -34,7 +34,7 @@ export class Product {
   color?: string;
 
   @Column({ nullable: true, type: "varchar" })
-  size?: number;
+  size?: string;
 
   @Column({ nullable: true, type: "varchar" })
   brand?: string;

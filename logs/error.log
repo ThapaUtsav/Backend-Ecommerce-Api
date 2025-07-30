@@ -1,2 +1,4 @@
 [2025-07-24T08:00:30.727Z] ERROR: Error creating product: malformed array literal: "https://example.com/images/keyboard-front.jpg,https://example.com/images/keyboard-back.jpg"
 [2025-07-24T08:00:57.077Z] ERROR: Error creating product: malformed array literal: ""
+[2025-07-30T09:08:22.518Z] ERROR: Error fetching products
+[2025-07-30T09:13:00.023Z] ERROR: Error fetching products

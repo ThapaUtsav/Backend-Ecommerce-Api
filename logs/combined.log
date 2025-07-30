@@ -79,3 +79,10 @@
 [2025-07-29T01:59:22.947Z] INFO: User login attempt: {"email":"admin@example.com","password":"mypassword"}
 [2025-07-29T04:54:51.005Z] INFO: Server running on port 3000
 [2025-07-29T05:05:19.279Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-07-30T08:34:23.051Z] INFO: User registration attempt:{"email":"user@example.com","password":"rootpassword","role":"customer"}
+[2025-07-30T08:34:32.556Z] INFO: User registration attempt:{"email":"userrr@example.com","password":"rootpassword","role":"customer"}
+[2025-07-30T08:36:12.429Z] INFO: User registration attempt:{"email":"user@example.com","password":"rootpassword","role":"customer"}
+[2025-07-30T08:36:25.677Z] INFO: Admin login attempt: {"email":"user@example.com","password":"rootpassword"}
+[2025-07-30T08:36:42.054Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-07-30T09:08:22.518Z] ERROR: Error fetching products
+[2025-07-30T09:13:00.023Z] ERROR: Error fetching products

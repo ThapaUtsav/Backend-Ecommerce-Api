@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/auth/register": {
+    "/api/register": {
       "post": {
         "summary": "Register a new user",
         "tags": ["Auth"],
@@ -29,7 +29,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/api/login": {
       "post": {
         "summary": "Login user",
         "tags": ["Auth"],
@@ -59,24 +59,73 @@
         }
       }
     },
-    "/products": {
+    "/api/products": {
       "get": {
-        "summary": "Get all products with filters",
+        "summary": "Get products with filters",
         "tags": ["Products"],
         "parameters": [
-          { "name": "category", "in": "query", "schema": { "type": "string" } },
           {
-            "name": "price_min",
+            "name": "name",
             "in": "query",
-            "schema": { "type": "number" }
+            "schema": { "type": "string" },
+            "description": "Filter producs by name (Partial search works)"
           },
           {
-            "name": "price_max",
+            "name": "category",
             "in": "query",
-            "schema": { "type": "number" }
+            "schema": { "type": "string" },
+            "description": "Filter products by category"
           },
-          { "name": "page", "in": "query", "schema": { "type": "integer" } },
-          { "name": "limit", "in": "query", "schema": { "type": "integer" } }
+          {
+            "name": "price_gte",
+            "in": "query",
+            "schema": { "type": "number" },
+            "description": "Filter products with price greater than or equal to this value"
+          },
+          {
+            "name": "price_lte",
+            "in": "query",
+            "schema": { "type": "number" },
+            "description": "Filter products with price less than or equal to this value"
+          },
+          {
+            "name": "ordered_by",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["newest", "oldest"],
+              "default": "newest"
+            },
+            "description": "Sort products by creation date"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["price_asc", "price_desc"],
+              "default": "price_asc"
+            },
+            "description": "Sort direction for ordered_by: 'price_asc' = oldest to newest, 'pricedesc' = newest to oldest"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Item size ranging from integer to string when shown as output "
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Item size ranging from integer to string when shown as output "
+          },
+          {
+            "name": "color",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Item size ranging from integer to string when shown as output "
+          }
         ],
         "responses": {
           "200": {
@@ -111,7 +160,7 @@
                     "type": "array",
                     "items": { "type": "string", "format": "binary" }
                   },
-                  "stock": { "type": "integer" }
+                  "inventory": { "type": "integer" }
                 },
                 "required": ["name", "price"]
               }
@@ -124,7 +173,7 @@
         }
       }
     },
-    "/products/{id}": {
+    "/api/products/{id}": {
       "patch": {
         "summary": "Update product inventory",
         "tags": ["Products"],
@@ -144,7 +193,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "stock": { "type": "integer" }
+                  "inventory": { "type": "integer" }
                 }
               }
             }
@@ -207,7 +256,7 @@
         "description": "This is for registration of customer role basically default",
         "properties": {
           "email": { "type": "string", "format": "email" },
-          "password": { "type": "string", "example": "root" },
+          "password": { "type": "string", "example": "rootpassword" },
           "role": {
             "type": "string",
             "enum": ["customer", "admin"],
@@ -219,24 +268,27 @@
       "LoginInput": {
         "type": "object",
         "properties": {
-          "email": { "type": "string" },
-          "password": { "type": "string" }
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "example": "rootpassword" }
         },
         "required": ["email", "password"]
       },
       "Product": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "price": { "type": "number" },
-          "category": { "type": "string" },
+          "id": { "type": "string", "example": 1 },
+          "name": { "type": "string", "example": "Nike AIR" },
+          "description": {
+            "type": "string",
+            "example": "Aireless heels on shoe and a authentication claidation on buyers purchase"
+          },
+          "price": { "type": "number", "example": "200.99" },
+          "category": { "type": "string", "example": "Sports Shoes" },
           "images": {
             "type": "array",
             "items": { "type": "string", "format": "uri" }
           },
-          "stock": { "type": "integer" }
+          "inventory": { "type": "integer" }
         }
       }
     }

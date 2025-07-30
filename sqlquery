@@ -45,6 +45,9 @@
 
     ALTER table products(
         ADD color VARCHAR(255),
-        ADD size INTEGER,
+        ADD size varchar()255,
         ADD brand VARCHAR(255)
     )
+
+
+
