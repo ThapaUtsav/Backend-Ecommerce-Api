@@ -118,13 +118,13 @@
             "name": "brand",
             "in": "query",
             "schema": { "type": "string" },
-            "description": "Item size ranging from integer to string when shown as output "
+            "description": "Item brand manufactured "
           },
           {
             "name": "color",
             "in": "query",
             "schema": { "type": "string" },
-            "description": "Item size ranging from integer to string when shown as output "
+            "description": "Item color"
           }
         ],
         "responses": {
@@ -160,7 +160,10 @@
                     "type": "array",
                     "items": { "type": "string", "format": "binary" }
                   },
-                  "inventory": { "type": "integer" }
+                  "inventory": { "type": "integer" },
+                  "size": { "type": "string" },
+                  "brand": { "type": "string" },
+                  "color": { "type": "string" }
                 },
                 "required": ["name", "price"]
               }
@@ -201,6 +204,24 @@
         },
         "responses": {
           "200": { "description": "Inventory updated" },
+          "404": { "description": "Product not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a product (Admin only)",
+        "tags": ["Products"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Product deleted successfully" },
+          "403": { "description": "Admin only" },
           "404": { "description": "Product not found" }
         }
       }
@@ -288,7 +309,10 @@
             "type": "array",
             "items": { "type": "string", "format": "uri" }
           },
-          "inventory": { "type": "integer" }
+          "inventory": { "type": "integer", "example": 10 },
+          "size": { "type": "string", "example": "42" },
+          "brand": { "type": "string", "example": "NIKE" },
+          "color": { "type": "string", "example": "Black with Red strings" }
         }
       }
     }
