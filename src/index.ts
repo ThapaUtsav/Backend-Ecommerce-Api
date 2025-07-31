@@ -7,6 +7,7 @@ import dashRoutes from "./routes/protected.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import prodRoutes from "./routes/product.routes.js";
 import swaggerUi from "swagger-ui-express";
+import orderRoutes from "./routes/order.routes.js";
 import fs from "fs";
 import path from "path";
 import cors from "cors";
@@ -23,6 +24,7 @@ app.use("/api", router);
 app.use("/api", userRoutes);
 app.use("/api", dashRoutes);
 app.use("/api/products", prodRoutes);
+app.use("/api", orderRoutes);
 
 // Load OpenAPI spec from file once
 const openApiSpec = JSON.parse(

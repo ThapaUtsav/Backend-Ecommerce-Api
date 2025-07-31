@@ -1,13 +1,8 @@
-// src/routes/order.routes.ts
+// routes/order.routes.ts
 import { Router } from "express";
-import * as orderController from "../controllers/order.controller.js";
-import { authenticateToken } from "../middleware/auth.js"; // adjust as needed
-
+import { createOrderHandler } from "controllers/order.controller.js";
 const router = Router();
 
-router.post("/", authenticateToken, orderController.createOrder);
-router.get("/", orderController.getOrders);
-router.get("/:id", orderController.getOrder);
-router.delete("/:id", authenticateToken, orderController.cancelOrder);
+router.post("/orders", createOrderHandler);
 
 export default router;

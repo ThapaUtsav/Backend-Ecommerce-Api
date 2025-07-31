@@ -1,31 +1,45 @@
+// services/orderservices.ts
 import { AppDataSource } from "config/.ormconfig.js";
 import { Order } from "models/Order.js";
-
+import { OrderItem } from "models/Orderitem.js";
+import { Product } from "models/Product.js";
+import { User } from "models/User.js";
 export const createOrder = async (
   userId: number,
-  productId: number,
-  quantity: number
+  items: { productId: number; quantity: number }[]
 ) => {
   const orderRepo = AppDataSource.getRepository(Order);
-  const newOrder = orderRepo.create({
-    user: { id: userId },
-    product: { id: productId },
-    quantity,
+  const orderItemRepo = AppDataSource.getRepository(OrderItem);
+  const productRepo = AppDataSource.getRepository(Product);
+  const userRepo = AppDataSource.getRepository(User);
+
+  const user = await userRepo.findOneByOrFail({ id: userId });
+
+  let total = 0;
+  const orderItems: OrderItem[] = [];
+
+  for (const item of items) {
+    const product = await productRepo.findOneByOrFail({ id: item.productId });
+
+    const itemTotal = Number(product.price) * item.quantity;
+    total += itemTotal;
+
+    const orderItem = orderItemRepo.create({
+      product,
+      quantity: item.quantity,
+      price: product.price,
+    });
+
+    orderItems.push(orderItem);
+  }
+
+  const order = orderRepo.create({
+    user,
+    total,
+    items: orderItems,
   });
-  return await orderRepo.save(newOrder);
-};
-export const getAllOrders = async () => {
-  const orderRepo = AppDataSource.getRepository(Order);
-  return await orderRepo.find({ relations: ["user", "product"] });
-};
-export const getOrderbyID = async (id: number) => {
-  const orderRepo = AppDataSource.getRepository(Order);
-  return await orderRepo.find({
-    where: { id },
-    relations: ["user", "product"],
-  });
-};
-export const deleteOrder = async (id: number) => {
-  const orderRepo = AppDataSource.getRepository(Order);
-  return await orderRepo.delete(id);
+
+  await orderRepo.save(order);
+
+  return order;
 };

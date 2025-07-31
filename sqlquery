@@ -22,26 +22,24 @@
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    -- 3. Orders Table
-    CREATE TABLE orders (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER NOT NULL,
-        total NUMERIC(10, 2) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
+    -- 3. Orders Table-- Create orders table
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  total DECIMAL(10, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-    -- 4. Order Items Table //links pain in the brain
-    CREATE TABLE order_items (
-        id SERIAL PRIMARY KEY,
-        order_id INTEGER NOT NULL,
-        product_id INTEGER NOT NULL,
-        quantity INTEGER NOT NULL,
-        price_at_purchase NUMERIC(10, 2) NOT NULL,
-        FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
-    );
+-- Create order_items table
+CREATE TABLE order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL,
+  price DECIMAL(10, 2) NOT NULL
+);
+
+
 
     ALTER table products(
         ADD color VARCHAR(255),

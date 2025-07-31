@@ -8,7 +8,7 @@ declare global {
         | (string & {
             id: number;
             role: "admin" | "customer";
-          }); // or a custom type for your token payload
+          });
     }
   }
 }

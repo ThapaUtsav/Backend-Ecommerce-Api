@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "nodenext",
     "strict": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
