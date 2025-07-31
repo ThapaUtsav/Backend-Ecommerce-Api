@@ -12,6 +12,7 @@ export const orderCreationSchema = z.object({
           .number()
           .int()
           .positive("Quantity must be a positive integer"),
+        price: z.number().int().positive(),
       })
     )
     .nonempty("Order must contain at least one item"),

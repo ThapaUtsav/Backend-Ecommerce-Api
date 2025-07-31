@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { Order } from "./Order.js";
+import { nullable } from "zod";
 
 @Entity({ name: "users" })
 export class User {
@@ -25,4 +28,7 @@ export class User {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt!: Date;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[] | null = null;
 }

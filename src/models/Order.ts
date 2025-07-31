@@ -1,4 +1,4 @@
-//data endpoint for typeorm for orders
+// src/models/Order.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,23 +7,23 @@ import {
   CreateDateColumn,
 } from "typeorm";
 import { User } from "./User.js";
-
+import { Product } from "./Product.js";
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, (user) => user.orders)
   user!: User;
 
-  @Column("jsonb") //product list
-  items!: {
-    productId: number;
-    quantity: number;
-  }[];
+  @ManyToOne(() => Product)
+  product!: Product;
 
-  @Column("decimal")
-  total!: number;
+  @Column()
+  quantity!: number;
+
+  @Column({ default: "pending" })
+  status!: string;
 
   @CreateDateColumn()
   createdAt!: Date;

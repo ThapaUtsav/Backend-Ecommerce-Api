@@ -178,7 +178,7 @@
     },
     "/api/products/{id}": {
       "patch": {
-        "summary": "Update product inventory",
+        "summary": "Update product inventory(Admin only)",
         "tags": ["Products"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [

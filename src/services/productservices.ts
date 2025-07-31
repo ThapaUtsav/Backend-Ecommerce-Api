@@ -25,6 +25,8 @@ export const getAllProductsService = async (query: any) => {
         gt: ">",
         lt: "<",
       };
+
+      //main search for the api
       qb.andWhere(`product.${field} ${dbOpMap[operator]} :${key}`, {
         [key]: Number(cleanValue),
       });
