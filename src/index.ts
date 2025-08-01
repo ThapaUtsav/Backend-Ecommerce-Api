@@ -24,7 +24,7 @@ app.use("/api", router);
 app.use("/api", userRoutes);
 app.use("/api", dashRoutes);
 app.use("/api/products", prodRoutes);
-app.use("/api", orderRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Load OpenAPI spec from file once
 const openApiSpec = JSON.parse(

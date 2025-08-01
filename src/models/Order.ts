@@ -8,19 +8,28 @@ import {
   ManyToOne,
   OneToMany,
   CreateDateColumn,
+  JoinColumn,
 } from "typeorm";
 @Entity("orders")
 export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({ type: "int" })
+  user_id!: number;
+
   @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: "user_id" })
   user!: User;
-  @OneToMany(() => OrderItem, (item) => item.order)
+
+  @OneToMany(() => OrderItem, (item) => item.order, {
+    cascade: true,
+    eager: true,
+  })
   items!: OrderItem[];
 
   @CreateDateColumn()
-  createdAt!: Date;
+  created_at!: Date;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
   total!: number;

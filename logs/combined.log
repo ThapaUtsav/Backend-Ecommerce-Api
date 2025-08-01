@@ -90,3 +90,6 @@
 [2025-07-31T04:33:49.394Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
 [2025-07-31T04:46:33.004Z] WARN: Product not found: ID 4
 [2025-07-31T04:46:34.297Z] WARN: Product not found: ID 1
+[2025-08-01T04:25:13.825Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-08-01T04:25:41.958Z] WARN: Product not found: ID 1
+[2025-08-01T04:25:44.094Z] WARN: Product not found: ID 4

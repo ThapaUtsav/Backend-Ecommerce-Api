@@ -1,5 +1,11 @@
 // models/OrderItem.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { Order } from "./Order.js";
 import { Product } from "./Product.js";
 @Entity("order_items")
@@ -8,14 +14,16 @@ export class OrderItem {
   id!: number;
 
   @ManyToOne(() => Order, (order) => order.items)
+  @JoinColumn({ name: "order_id" })
   order!: Order;
 
   @ManyToOne(() => Product)
+  @JoinColumn({ name: "product_id" })
   product!: Product;
 
-  @Column("int") // explicitly define type
+  @Column("int")
   quantity!: number;
 
-  @Column("decimal", { precision: 10, scale: 2 }) // define type for price
+  @Column("decimal", { precision: 10, scale: 2 })
   price!: number;
 }
