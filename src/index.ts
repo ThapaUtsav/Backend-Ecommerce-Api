@@ -40,7 +40,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(undefined, {
     swaggerOptions: {
-      url: "http://localhost:3000/swagger.json", // Use full URL with protocol
+      url: "http://localhost:3000/swagger.json",
     },
   })
 );
