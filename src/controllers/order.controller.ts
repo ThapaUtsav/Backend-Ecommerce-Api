@@ -4,11 +4,12 @@ import {
   orderSchema,
   updateOrderSchema,
 } from "../validators/order.validation.js";
-import * as OrderService from "../services/orderservices.js";
+// import * as OrderService from "../services/orderservices.js";
 import {
   createOrderService,
-  // updateOrderService,
+  updateOrderService,
   getOrdersByUser,
+  deleteOrderItemService,
 } from "../services/orderservices.js";
 import { ZodError } from "zod";
 import logger from "utils/logger.js";
@@ -63,41 +64,49 @@ export const getMyOrders = async (req: Request, res: Response) => {
   }
 };
 
-//update order
-export const updateOrder = async (req: Request, res: Response) => {
-  const id = parseInt(req.params.order_id);
-  const userid = parseInt(req.params.userId);
-  const validation = updateOrderSchema.safeParse(req.body);
-
-  if (!validation.success) {
-    logger.error(
-      `Validation failed on order update (ID: ${id}): ${JSON.stringify(
-        req.body
-      )}`,
-      validation.error
-    );
+// update order
+export const updateOrderItems = async (req: Request, res: Response) => {
+  const userID = req.user?.id;
+  const orderId = parseInt(req.params.order_id);
+  const parsed = updateOrderSchema.safeParse(req.body);
+  if (!parsed.success) {
     return res.status(400).json({
-      message: "Validation error",
-      errors: validation.error,
+      message: "Validation Errors",
+      errors: parsed.error.issues,
     });
   }
+  try {
+    const updatedOrder = await updateOrderService(
+      userID,
+      orderId,
+      parsed.data.items || []
+    );
+    return res.json(updatedOrder);
+  } catch (err) {
+    return res.status(500).json({ error: (err as Error).message });
+  }
+};
+
+//delete order
+export const deleteOrderItem = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+  const orderId = parseInt(req.params.order_id);
+  const itemId = parseInt(req.params.item_id);
 
   try {
-    const updatedOrder = await OrderService.updateOrderService(
-      id,
-      userid,
-      validation.data
-    );
-    if (!updatedOrder) {
-      logger.warn(`Order not found for update: ID ${id}`);
-      return res.status(404).json({ message: "Order not found" });
+    const success = await deleteOrderItemService(userId, orderId, itemId);
+
+    if (!success) {
+      return res
+        .status(404)
+        .json({ message: "Order item not found or unauthorized" });
     }
-    res.json(updatedOrder);
-  } catch (error: unknown) {
-    const err = error instanceof Error ? error : new Error(String(error));
-    logger.error(`Error updating order ID ${id}: ${err.message}`, {
-      error: err,
-    });
-    res.status(500).json({ message: "Error updating order" });
+    //deletion shows no content or error s
+    return res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed to delete order item" });
   }
 };
