@@ -92,7 +92,11 @@ export const updateOrderStatusController = async (
   try {
     const userId = req.user?.id;
     const isAdmin = req.user?.role === "admin";
-    const orderId = parseInt(req.params.order_id);
+    const orderId = parseInt(req.params.orderId);
+    if (isNaN(orderId)) {
+      return res.status(400).json({ error: "Invalid order ID" });
+    }
+
     const { status } = req.body;
 
     const result = await updateAllOrderItemsStatus(
