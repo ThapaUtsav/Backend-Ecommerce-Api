@@ -9,18 +9,3 @@ export const orderSchema = z.object({
     })
   ),
 });
-
-export const updateOrderSchema = z
-  .object({
-    total: z.number().positive().optional(),
-    quantity: z.number().positive(),
-    items: z
-      .array(
-        z.object({
-          productId: z.number().int(),
-          quantity: z.number().int().positive().max(10),
-        })
-      )
-      .optional(),
-  })
-  .strict();

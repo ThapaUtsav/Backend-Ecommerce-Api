@@ -8,6 +8,11 @@ import {
 } from "typeorm";
 import { Order } from "./Order.js";
 import { Product } from "./Product.js";
+export enum OrderStatus {
+  PENDING = "pending",
+  CANCELLED = "cancelled",
+  DONE = "done",
+}
 @Entity("order_items")
 export class OrderItem {
   @PrimaryGeneratedColumn()
@@ -26,4 +31,7 @@ export class OrderItem {
 
   @Column("decimal", { precision: 10, scale: 2 })
   price!: number;
+
+  @Column({ type: "varchar", default: OrderStatus.PENDING })
+  status!: OrderStatus;
 }

@@ -186,3 +186,5 @@
     "message": "Unrecognized key: \"item\""
   }
 ]
+[2025-08-05T05:07:13.759Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-08-05T09:23:01.044Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}

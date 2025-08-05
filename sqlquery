@@ -47,5 +47,7 @@ CREATE TABLE order_items (
         ADD brand VARCHAR(255)
     )
 
+ALTER TABLE order_items
+ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'pending';
 
 

@@ -2,7 +2,7 @@
 import { AppDataSource } from "../config/.ormconfig.js";
 import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
-import { OrderItem } from "models/Orderitem.js";
+import { OrderItem, OrderStatus } from "../models/Orderitem.js";
 import { User } from "../models/User.js";
 import { Repository } from "typeorm";
 
@@ -12,7 +12,7 @@ const userRepo = AppDataSource.getRepository(User);
 const productRepo = AppDataSource.getRepository(Product);
 const orderItemRepo = AppDataSource.getRepository(OrderItem);
 
-//separated the oredre item logic for calculation
+// Utility: Create order items and calculate total
 const buildOrderItems = async (
   items: { productId: number; quantity: number }[],
   productRepo: Repository<Product>
@@ -20,7 +20,6 @@ const buildOrderItems = async (
   let total = 0;
   const orderItems: OrderItem[] = [];
 
-  //for every item added multiplication logic through product id
   for (const item of items) {
     const product = await productRepo.findOneByOrFail({ id: item.productId });
     const price = Number(product.price);
@@ -36,14 +35,13 @@ const buildOrderItems = async (
   return { orderItems, total };
 };
 
-//Creation of order
+// Create Order
 export const createOrderService = async (
   userId: number,
   items: { productId: number; quantity: number }[]
 ) => {
   try {
     const user = await userRepo.findOneByOrFail({ id: userId });
-
     const { orderItems, total } = await buildOrderItems(items, productRepo);
 
     const order = new Order();
@@ -57,7 +55,7 @@ export const createOrderService = async (
   }
 };
 
-//History of user
+// Get Orders by User
 export const getOrdersByUser = async (userId: number) => {
   return await orderRepo.find({
     where: { user: { id: userId } },
@@ -66,79 +64,62 @@ export const getOrdersByUser = async (userId: number) => {
   });
 };
 
-//update
-export const updateOrderService = async (
+// Admin Status change on DONE OR CANCEL
+export const updateAllOrderItemsStatus = async (
   userId: number,
   orderId: number,
-  updates: { productId: number; quantity: number }[]
+  newStatus: OrderStatus,
+  isAdmin: boolean
 ) => {
   const order = await orderRepo.findOne({
-    where: { id: orderId, user: { id: userId } },
-    relations: ["items", "items.product"],
+    where: { id: orderId },
+    relations: ["user"],
   });
-  if (!order) throw new Error("ORder not Found");
-  for (const update of updates) {
-    const exisitingItem = order.items.find(
-      (item) => item.product.id === update.productId
-    );
-    if (exisitingItem) {
-      exisitingItem.quantity += update.quantity;
 
-      //remove item if quantity is 0
-      if (exisitingItem.quantity <= 0) {
-        await orderItemRepo.remove(exisitingItem);
-        order.items = order.items.filter((i) => i.id !== exisitingItem.id);
-      }
-    } else {
-      //New produts to fetch and add
-      const product = await productRepo.findOneByOrFail({
-        id: update.productId,
-      });
-      const newItem = new OrderItem();
-      newItem.product = product;
-      newItem.quantity = update.quantity;
-      newItem.price = Number(product.price);
-      newItem.order = order;
+  if (!order) throw new Error("Order not found");
 
-      await orderItemRepo.save(newItem);
-      order.items.push(newItem);
-    }
+  if (newStatus === OrderStatus.DONE && !isAdmin) {
+    throw new Error("Unauthorized: Only admin can mark DONE");
   }
 
-  //updates causes recalculation
-  order.total = order.items.reduce(
-    (sum, item) => sum + item.quantity * item.price,
-    0
-  );
-  return await orderRepo.save(order);
-};
+  if (!isAdmin && order.user.id !== userId) {
+    throw new Error("Unauthorized: Cannot update this order");
+  }
 
-//delete service logic
-export const deleteOrderItemService = async (
-  userId: number,
-  orderId: number,
-  itemId: number
-): Promise<boolean> => {
-  // Verify order belongs to user
-  const order = await orderRepo.findOne({
-    where: { id: orderId, user: { id: userId } },
-    relations: ["items"],
+  const orderItems = await orderItemRepo.find({
+    where: { order: { id: orderId } },
   });
 
-  if (!order) return false;
+  for (const item of orderItems) {
+    item.status = newStatus;
+    await orderItemRepo.save(item);
+  }
 
-  // Find the item to delete
-  const item = order.items.find((i) => i.id === itemId);
-  if (!item) return false;
+  return { message: `All items in order ${orderId} updated to ${newStatus}` };
+};
 
-  // Delete the item
-  await orderItemRepo.remove(item);
+// Update Single Order for user
+export const updateOrderItemStatus = async (
+  userId: number,
+  orderItemId: number,
+  newStatus: OrderStatus,
+  isAdmin: boolean
+) => {
+  const orderItem = await orderItemRepo.findOne({
+    where: { id: orderItemId },
+    relations: ["order", "order.user"],
+  });
 
-  // Recalculate order total
-  const updatedItems = order.items.filter((i) => i.id !== itemId);
-  order.total = updatedItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  if (!orderItem) throw new Error("Order item not found");
 
-  await orderRepo.save(order);
+  if (newStatus === OrderStatus.DONE && !isAdmin) {
+    throw new Error("Unauthorized: Only admin can mark DONE");
+  }
 
-  return true;
+  if (!isAdmin && orderItem.order.user.id !== userId) {
+    throw new Error("Unauthorized: Not your order item");
+  }
+
+  orderItem.status = newStatus;
+  return await orderItemRepo.save(orderItem);
 };
