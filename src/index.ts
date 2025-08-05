@@ -3,8 +3,6 @@ import { AppDataSource } from "./config/.ormconfig.js";
 import express from "express";
 import dotenv from "dotenv";
 import router from "./routes/auth.routes.js";
-import dashRoutes from "./routes/protected.routes.js";
-import userRoutes from "./routes/user.routes.js";
 import prodRoutes from "./routes/product.routes.js";
 import swaggerUi from "swagger-ui-express";
 import orderRoutes from "./routes/order.routes.js";
@@ -21,8 +19,6 @@ app.use(cors());
 
 app.use(express.json());
 app.use("/api", router);
-app.use("/api", userRoutes);
-app.use("/api", dashRoutes);
 app.use("/api/products", prodRoutes);
 app.use("/api/orders", orderRoutes);
 

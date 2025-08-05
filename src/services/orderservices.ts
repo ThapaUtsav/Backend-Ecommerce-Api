@@ -12,7 +12,7 @@ const userRepo = AppDataSource.getRepository(User);
 const productRepo = AppDataSource.getRepository(Product);
 const orderItemRepo = AppDataSource.getRepository(OrderItem);
 
-// Utility: Create order items and calculate total
+//ORder calcuation
 const buildOrderItems = async (
   items: { productId: number; quantity: number }[],
   productRepo: Repository<Product>
@@ -123,3 +123,5 @@ export const updateOrderItemStatus = async (
   orderItem.status = newStatus;
   return await orderItemRepo.save(orderItem);
 };
+
+//Delete
