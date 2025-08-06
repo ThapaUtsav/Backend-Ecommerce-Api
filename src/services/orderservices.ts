@@ -5,6 +5,8 @@ import { Product } from "../models/Product.js";
 import { OrderItem, OrderStatus } from "../models/Orderitem.js";
 import { User } from "../models/User.js";
 import { Repository } from "typeorm";
+import logger from "utils/logger.js";
+import { query } from "winston";
 
 // Repositories
 const orderRepo = AppDataSource.getRepository(Order);
@@ -40,18 +42,51 @@ export const createOrderService = async (
   userId: number,
   items: { productId: number; quantity: number }[]
 ) => {
+  const queryRunner = AppDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
   try {
     const user = await userRepo.findOneByOrFail({ id: userId });
-    const { orderItems, total } = await buildOrderItems(items, productRepo);
 
+    // Validate and process order items with quantity check
+    const processedOrderItems: OrderItem[] = [];
+    let total = 0;
+
+    for (const item of items) {
+      const product = await productRepo.findOneByOrFail({ id: item.productId });
+      //MORE than asked
+      if (product.inventory < item.quantity) {
+        throw new Error(`Insufficient quantity for product ${product.name}`);
+      }
+
+      // Reduce product quantity
+      product.inventory -= item.quantity;
+      await productRepo.save(product);
+      const orderItem = new OrderItem();
+      orderItem.product = product;
+      orderItem.quantity = item.quantity;
+
+      // Calculate price
+      const price = Number(product.price);
+      orderItem.price = price;
+      total += price * item.quantity;
+
+      processedOrderItems.push(orderItem);
+    }
+    // Create order
     const order = new Order();
     order.user = user;
-    order.items = orderItems;
+    order.items = processedOrderItems;
     order.total = total;
+    const savedOrder = await orderRepo.save(order);
+    await queryRunner.commitTransaction();
 
-    return await orderRepo.save(order);
+    return savedOrder;
   } catch (error) {
+    await queryRunner.rollbackTransaction();
     throw new Error("Failed to create order: " + (error as Error).message);
+  } finally {
+    await queryRunner.release();
   }
 };
 
@@ -113,7 +148,7 @@ export const updateOrderItemStatus = async (
   if (!orderItem) throw new Error("Order item not found");
 
   if (newStatus === OrderStatus.DONE && !isAdmin) {
-    throw new Error("Unauthorized: Only admin can mark DONE");
+    throw new Error("Unauthorized: Only admin can mark  DONE");
   }
 
   if (!isAdmin && orderItem.order.user.id !== userId) {
@@ -123,5 +158,3 @@ export const updateOrderItemStatus = async (
   orderItem.status = newStatus;
   return await orderItemRepo.save(orderItem);
 };
-
-//Delete

@@ -1,6 +1,10 @@
 // controllers/orderController.ts
 import { Request, Response } from "express";
-import { orderSchema } from "../validators/order.validation.js";
+import {
+  orderSchema,
+  updateOrderItemSchema,
+  updateOrderStatusSchema,
+} from "../validators/order.validation.js";
 // import * as OrderService from "../services/orderservices.js";
 import {
   createOrderService,
@@ -12,6 +16,7 @@ import { ZodError } from "zod";
 import logger from "utils/logger.js";
 import { AppDataSource } from "config/.ormconfig.js";
 import { Order } from "models/Order.js";
+import { ValidationError } from "class-validator";
 
 //creation of order and linkage is done
 export const createOrder = async (req: Request, res: Response) => {
@@ -43,6 +48,11 @@ export const createOrder = async (req: Request, res: Response) => {
     }
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.issues });
+    }
+    if (err instanceof ValidationError) {
+      return res
+        .status(400)
+        .json({ error: "Validation error cause while creation" });
     }
     return res.status(500).json({ error: "Could not create order" });
   }
@@ -93,6 +103,17 @@ export const updateOrderStatusController = async (
     const userId = req.user?.id;
     const isAdmin = req.user?.role === "admin";
     const orderId = parseInt(req.params.orderId);
+    const validationResult = updateOrderStatusSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      return res.status(400).json({
+        message: "Validation error might be the status wording",
+        errors: validationResult?.error?.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        })),
+      });
+    }
     if (isNaN(orderId)) {
       return res.status(400).json({ error: "Invalid order ID" });
     }
@@ -107,6 +128,7 @@ export const updateOrderStatusController = async (
     );
     res.status(200).json(result);
   } catch (error) {
+    logger.error("Update status error :", error);
     res.status(400).json({ error: (error as Error).message });
   }
 };
@@ -119,7 +141,17 @@ export const updateOrderItemStatusController = async (
   try {
     // Explicit parsing with error handling
     const itemId = parseInt(req.params.itemId, 10);
+    const validationResultUserItem = updateOrderItemSchema.safeParse(req.body);
 
+    if (!validationResultUserItem.success) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: validationResultUserItem.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        })),
+      });
+    }
     // Add validation for itemId
     if (isNaN(itemId)) {
       return res.status(400).json({
