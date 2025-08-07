@@ -9,7 +9,8 @@ export const productCreationSchema = z.object({
   inventory: z
     .number()
     .int()
-    .nonnegative("Stock must be a non-negative integer"),
+    .nonnegative("Stock must be a non-negative integer")
+    .min(1),
   images: z.array(z.url()).optional(),
   color: z.string().min(3),
   size: z.string().optional(),

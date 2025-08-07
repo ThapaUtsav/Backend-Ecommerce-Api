@@ -100,36 +100,101 @@ export const updateOrderStatusController = async (
   res: Response
 ) => {
   try {
+    // Early validation checks
     const userId = req.user?.id;
     const isAdmin = req.user?.role === "admin";
     const orderId = parseInt(req.params.orderId);
-    const validationResult = updateOrderStatusSchema.safeParse(req.body);
 
+    // Validate order ID first
+    if (isNaN(orderId)) {
+      return res.status(400).json({ error: "Invalid order ID" });
+    }
+
+    // Validate request body
+    const validationResult = updateOrderStatusSchema.safeParse(req.body);
     if (!validationResult.success) {
       return res.status(400).json({
-        message: "Validation error might be the status wording",
-        errors: validationResult?.error?.issues.map((issue) => ({
+        message: "Validation error in status update",
+        errors: validationResult.error.issues.map((issue) => ({
           field: issue.path.join("."),
           message: issue.message,
         })),
       });
     }
-    if (isNaN(orderId)) {
-      return res.status(400).json({ error: "Invalid order ID" });
-    }
 
     const { status } = req.body;
 
-    const result = await updateAllOrderItemsStatus(
-      userId,
+    // Structured logging
+    logger.info("Order status update attempt", {
       orderId,
-      status,
-      isAdmin
-    );
-    res.status(200).json(result);
+      newStatus: status,
+      userId,
+      isAdmin,
+    });
+
+    try {
+      const result = await updateAllOrderItemsStatus(
+        userId,
+        orderId,
+        status,
+        isAdmin
+      );
+
+      // Successful update logging
+      logger.info("Order status updated successfully", {
+        orderId,
+        newStatus: status,
+        revertedItems: result.revertedItems,
+      });
+
+      return res.status(200).json({
+        message: result.message,
+        revertedItems: result.revertedItems,
+      });
+    } catch (serviceError) {
+      // Centralized error handling
+      if (serviceError instanceof Error) {
+        const errorMap: Record<string, { status: number; message: string }> = {
+          "Order not found": {
+            status: 404,
+            message: "Order not found",
+          },
+          "Unauthorized:Only admin can mark DONE": {
+            status: 403,
+            message: "Only administrator can mark order as DONE",
+          },
+          "Unauthorzied:Cannot update this order": {
+            status: 403,
+            message: "You are not authorized to update this order",
+          },
+        };
+
+        const mappedError = errorMap[serviceError.message];
+        if (mappedError) {
+          return res
+            .status(mappedError.status)
+            .json({ error: mappedError.message });
+        }
+
+        // Unexpected error logging
+        logger.error("Unexpected order status update error", {
+          error: serviceError,
+          orderId,
+          userId,
+        });
+
+        return res.status(500).json({
+          error:
+            "An unexpected error occurred.Only Admin is allwoed to do DONE",
+        });
+      }
+
+      return res.status(500).json({ error: "Could not update order status" });
+    }
   } catch (error) {
-    logger.error("Update status error :", error);
-    res.status(400).json({ error: (error as Error).message });
+    // Catch-all error handler
+    logger.error("Unhandled error in updateOrderStatusController", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 

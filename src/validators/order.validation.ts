@@ -15,10 +15,10 @@ export const orderSchema = z.object({
 
 //admin confirm status change
 export const updateOrderStatusSchema = z.object({
-  status: z.enum(["Done", "Cancelled"]),
+  status: z.enum(["DONE", "CANCELLED", "PENDING"]),
 });
 
 //update items for user
 export const updateOrderItemSchema = z.object({
-  status: z.enum(["Cancelled"]),
+  status: z.enum(["CANCELLED"]),
 });

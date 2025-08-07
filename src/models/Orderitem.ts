@@ -9,9 +9,9 @@ import {
 import { Order } from "./Order.js";
 import { Product } from "./Product.js";
 export enum OrderStatus {
-  PENDING = "pending",
-  CANCELLED = "cancelled",
-  DONE = "done",
+  PENDING = "PENDING",
+  CANCELLED = "CANCELLED",
+  DONE = "DONE",
 }
 @Entity("order_items")
 export class OrderItem {

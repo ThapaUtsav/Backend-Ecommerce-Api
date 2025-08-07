@@ -191,3 +191,25 @@
 [2025-08-05T11:01:37.506Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
 [2025-08-06T08:03:49.629Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
 [2025-08-06T08:34:41.424Z] INFO: Admin login attempt: {"email":"userre@example.com","password":"mypassword"}
+[2025-08-07T05:03:08.169Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-07T05:03:23.029Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-07T05:32:44.788Z] INFO: Admin login attempt: {"email":"userre@example.com","password":"mypassword"}
+[2025-08-07T07:31:59.695Z] INFO: Order status update attempt
+[2025-08-07T07:31:59.895Z] INFO: Order status updated successfully
+[2025-08-07T08:10:58.418Z] INFO: Order status update attempt
+[2025-08-07T08:10:58.612Z] ERROR: Error foudn Unauthorized: Only admin can mark DONE
+[2025-08-07T08:10:58.613Z] ERROR: Unexpected order status update error
+[2025-08-07T08:12:09.534Z] INFO: Order status update attempt
+[2025-08-07T08:12:09.599Z] ERROR: Error foudn Unauthorized: Only admin can mark DONE
+[2025-08-07T08:12:09.600Z] ERROR: Unexpected order status update error
+[2025-08-07T08:13:09.586Z] INFO: Order status update attempt
+[2025-08-07T08:13:09.779Z] INFO: Order status updated successfully
+[2025-08-07T08:20:34.864Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-07T08:24:45.477Z] INFO: Order status update attempt
+[2025-08-07T08:24:45.562Z] INFO: Order status updated successfully
+[2025-08-07T08:26:14.114Z] INFO: Order status update attempt
+[2025-08-07T08:26:14.297Z] INFO: Order status updated successfully
+[2025-08-07T08:53:15.485Z] INFO: Admin login attempt: {"email":"user@gmail.com","password":"mypassword"}
+[2025-08-07T08:57:17.490Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-07T09:20:55.075Z] INFO: Admin login attempt: {"email":"user@gmail.com","password":"mypassword"}
+[2025-08-07T09:54:25.774Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}

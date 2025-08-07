@@ -41,8 +41,15 @@ export const createProduct = async (req: Request, res: Response) => {
 // GET ALL PRODUCTS
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await getAllProductsService(req.query);
-    res.json(products);
+    const queryWithInventoryFilter = {
+      ...req.query,
+      minInventory: 1,
+    };
+    const products = await getAllProductsService(queryWithInventoryFilter);
+    const filteredProducts = products.filter(
+      (product) => product.inventory > 0
+    );
+    res.json(filteredProducts);
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error("Error fetching products", { error: err });

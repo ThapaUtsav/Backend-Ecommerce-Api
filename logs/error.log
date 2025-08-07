@@ -190,3 +190,7 @@
     "message": "Unrecognized key: \"item\""
   }
 ]
+[2025-08-07T08:10:58.612Z] ERROR: Error foudn Unauthorized: Only admin can mark DONE
+[2025-08-07T08:10:58.613Z] ERROR: Unexpected order status update error
+[2025-08-07T08:12:09.599Z] ERROR: Error foudn Unauthorized: Only admin can mark DONE
+[2025-08-07T08:12:09.600Z] ERROR: Unexpected order status update error

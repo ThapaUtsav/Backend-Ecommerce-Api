@@ -14,29 +14,6 @@ const userRepo = AppDataSource.getRepository(User);
 const productRepo = AppDataSource.getRepository(Product);
 const orderItemRepo = AppDataSource.getRepository(OrderItem);
 
-//ORder calcuation
-const buildOrderItems = async (
-  items: { productId: number; quantity: number }[],
-  productRepo: Repository<Product>
-): Promise<{ orderItems: OrderItem[]; total: number }> => {
-  let total = 0;
-  const orderItems: OrderItem[] = [];
-
-  for (const item of items) {
-    const product = await productRepo.findOneByOrFail({ id: item.productId });
-    const price = Number(product.price);
-    total += price * item.quantity;
-
-    const orderItem = new OrderItem();
-    orderItem.product = product;
-    orderItem.quantity = item.quantity;
-    orderItem.price = price;
-    orderItems.push(orderItem);
-  }
-
-  return { orderItems, total };
-};
-
 // Create Order
 export const createOrderService = async (
   userId: number,
@@ -106,31 +83,52 @@ export const updateAllOrderItemsStatus = async (
   newStatus: OrderStatus,
   isAdmin: boolean
 ) => {
-  const order = await orderRepo.findOne({
-    where: { id: orderId },
-    relations: ["user"],
-  });
+  const queryRunner = AppDataSource.createQueryRunner();
+  await queryRunner.connect();
 
-  if (!order) throw new Error("Order not found");
+  try {
+    const order = await orderRepo.findOne({
+      where: { id: orderId },
+      relations: ["user", "items", "items.product"],
+    });
 
-  if (newStatus === OrderStatus.DONE && !isAdmin) {
-    throw new Error("Unauthorized: Only admin can mark DONE");
+    if (!order) throw new Error("Order not found");
+
+    if (newStatus === OrderStatus.DONE && !isAdmin) {
+      throw new Error("Unauthorized: Only admin can mark DONE");
+    }
+
+    if (!isAdmin && order.user.id !== userId) {
+      throw new Error("Unauthorized: Cannot update this order");
+    }
+    //main revert items to product inventroy
+    const revertedItems: { product: Product; quantity: number }[] = [];
+
+    await Promise.all(
+      order.items.map(async (item) => {
+        if (
+          newStatus === OrderStatus.CANCELLED &&
+          item.status !== OrderStatus.CANCELLED
+        ) {
+          const product = item.product;
+          product.inventory += item.quantity;
+          await productRepo.save(product);
+          revertedItems.push({ product, quantity: item.quantity });
+        }
+        item.status = newStatus;
+        await orderItemRepo.save(item);
+      })
+    );
+    return {
+      message: `All items in order ${orderId} updated to ${newStatus}`,
+      revertedItems: revertedItems.length,
+    };
+  } catch (error) {
+    logger.error("Error foudn", error);
+    throw error;
+  } finally {
+    await queryRunner.release();
   }
-
-  if (!isAdmin && order.user.id !== userId) {
-    throw new Error("Unauthorized: Cannot update this order");
-  }
-
-  const orderItems = await orderItemRepo.find({
-    where: { order: { id: orderId } },
-  });
-
-  for (const item of orderItems) {
-    item.status = newStatus;
-    await orderItemRepo.save(item);
-  }
-
-  return { message: `All items in order ${orderId} updated to ${newStatus}` };
 };
 
 // Update Single Order for user
@@ -140,21 +138,43 @@ export const updateOrderItemStatus = async (
   newStatus: OrderStatus,
   isAdmin: boolean
 ) => {
-  const orderItem = await orderItemRepo.findOne({
-    where: { id: orderItemId },
-    relations: ["order", "order.user"],
-  });
+  const queryRunner = AppDataSource.createQueryRunner();
+  await queryRunner.connect();
+  try {
+    const orderItem = await orderItemRepo.findOne({
+      where: { id: orderItemId },
+      relations: ["order", "order.user", "product"],
+    });
 
-  if (!orderItem) throw new Error("Order item not found");
+    if (!orderItem) throw new Error("Order item not found");
 
-  if (newStatus === OrderStatus.DONE && !isAdmin) {
-    throw new Error("Unauthorized: Only admin can mark  DONE");
+    if (newStatus === OrderStatus.DONE && !isAdmin) {
+      throw new Error("Unauthorized: Only admin can mark DONE");
+    }
+
+    if (!isAdmin && orderItem.order.user.id !== userId) {
+      throw new Error("Unauthorized: Not your order item");
+    }
+    const revertedItemsUser: { product: Product; quantity: number }[] = [];
+    if (
+      newStatus === OrderStatus.CANCELLED &&
+      orderItem.status !== OrderStatus.CANCELLED
+    ) {
+      const product = orderItem.product;
+      product.inventory += orderItem.quantity;
+      await productRepo.save(product);
+      revertedItemsUser.push({ product, quantity: orderItem.quantity });
+    }
+    orderItem.status = newStatus;
+    const updatedItem = await orderItemRepo.save(orderItem);
+    return {
+      message: `All items in order ${orderItemId} updated to ${newStatus}`,
+      revertedItemsUser: revertedItemsUser.length,
+    };
+  } catch (error) {
+    logger.error("Error detected on update on status", error);
+    throw error;
+  } finally {
+    await queryRunner.release();
   }
-
-  if (!isAdmin && orderItem.order.user.id !== userId) {
-    throw new Error("Unauthorized: Not your order item");
-  }
-
-  orderItem.status = newStatus;
-  return await orderItemRepo.save(orderItem);
 };
