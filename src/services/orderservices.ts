@@ -4,9 +4,7 @@ import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
 import { OrderItem, OrderStatus } from "../models/Orderitem.js";
 import { User } from "../models/User.js";
-import { Repository } from "typeorm";
 import logger from "utils/logger.js";
-import { query } from "winston";
 
 // Repositories
 const orderRepo = AppDataSource.getRepository(Order);
@@ -149,7 +147,7 @@ export const updateOrderItemStatus = async (
     if (!orderItem) throw new Error("Order item not found");
 
     if (newStatus === OrderStatus.DONE && !isAdmin) {
-      throw new Error("Unauthorized: Only admin can mark DONE");
+      throw new Error("Unauthorized: Only admin can mark  DONE");
     }
 
     if (!isAdmin && orderItem.order.user.id !== userId) {

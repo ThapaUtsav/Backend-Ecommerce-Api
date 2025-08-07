@@ -39,17 +39,26 @@ export const createProduct = async (req: Request, res: Response) => {
 };
 
 // GET ALL PRODUCTS
-export const getAllProducts = async (req: Request, res: Response) => {
+export const getAllProducts = async (
+  req: Request,
+  res: Response,
+  isAdmin: boolean
+) => {
   try {
-    const queryWithInventoryFilter = {
-      ...req.query,
-      minInventory: 1,
-    };
-    const products = await getAllProductsService(queryWithInventoryFilter);
-    const filteredProducts = products.filter(
-      (product) => product.inventory > 0
-    );
-    res.json(filteredProducts);
+    if (!isAdmin) {
+      const queryWithInventoryFilter = {
+        ...req.query,
+        minInventory: 1,
+      };
+      const products = await getAllProductsService(queryWithInventoryFilter);
+      const filteredProducts = products.filter(
+        (product) => product.inventory > 0
+      );
+      res.json(filteredProducts);
+    } else {
+      const products = await getAllProductsService(req.query);
+      res.json(products);
+    }
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error("Error fetching products", { error: err });

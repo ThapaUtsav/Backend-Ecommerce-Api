@@ -9,9 +9,9 @@ import { Router } from "express";
 import { authenticateToken } from "middleware/auth.js";
 
 const router = Router();
-//creation
+//creation{POST}
 router.post("/", authenticateToken, createOrder);
-//history of order
+//history of order {GET}
 router.get("/", authenticateToken, getMyOrders);
 
 //update admin change on pending to be done or cancel the update
