@@ -81,7 +81,7 @@ export const getMyOrders = async (req: Request, res: Response) => {
     // If user is an admin, fetch all orders
     if (userRole === "admin") {
       console.log("Admin fetching all orders");
-      orders = await getAllOrders(); // you need to implement this function
+      orders = await getAllOrders();
     } else {
       console.log("User fetching own orders");
       orders = await getOrdersByUser(userId);
@@ -124,7 +124,6 @@ export const updateOrderStatusController = async (
 
     const { status } = req.body;
 
-    // Structured logging
     logger.info("Order status update attempt", {
       orderId,
       newStatus: status,
@@ -152,7 +151,6 @@ export const updateOrderStatusController = async (
         revertedItems: result.revertedItems,
       });
     } catch (serviceError) {
-      // Centralized error handling
       if (serviceError instanceof Error) {
         const errorMap: Record<string, { status: number; message: string }> = {
           "Order not found": {
@@ -175,8 +173,6 @@ export const updateOrderStatusController = async (
             .status(mappedError.status)
             .json({ error: mappedError.message });
         }
-
-        // Unexpected error logging
         logger.error("Unexpected order status update error", {
           error: serviceError,
           orderId,
@@ -192,7 +188,6 @@ export const updateOrderStatusController = async (
       return res.status(500).json({ error: "Could not update order status" });
     }
   } catch (error) {
-    // Catch-all error handler
     logger.error("Unhandled error in updateOrderStatusController", error);
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -204,7 +199,6 @@ export const updateOrderItemStatusController = async (
   res: Response
 ) => {
   try {
-    // Explicit parsing with error handling
     const itemId = parseInt(req.params.itemId, 10);
     const validationResultUserItem = updateOrderItemSchema.safeParse(req.body);
 
@@ -227,8 +221,6 @@ export const updateOrderItemStatusController = async (
     const userId = req.user?.id;
     const isAdmin = req.user?.role === "admin";
     const { status } = req.body;
-
-    // Optional: Validate status
     if (!status) {
       return res.status(400).json({
         error: "Status is required",

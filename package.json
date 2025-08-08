@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch --include ./src/* ./src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "typeorm": "tsx node_modules/typeorm/cli.js",

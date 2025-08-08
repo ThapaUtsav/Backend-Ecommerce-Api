@@ -17,6 +17,10 @@ const logger = winston.createLogger({
       level: "error",
     }),
     new winston.transports.File({
+      filename: path.join("logs", "warn.log"),
+      level: "warn",
+    }),
+    new winston.transports.File({
       filename: path.join("logs", "combined.log"),
     }),
   ],

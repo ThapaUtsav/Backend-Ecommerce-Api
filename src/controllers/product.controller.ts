@@ -39,25 +39,36 @@ export const createProduct = async (req: Request, res: Response) => {
 };
 
 // GET ALL PRODUCTS
-export const getAllProducts = async (
-  req: Request,
-  res: Response,
-  isAdmin: boolean
-) => {
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    if (!isAdmin) {
+    if (req.user?.role == "admin") {
+      // const queryWithInventoryFilter = {
+      //   ...req.query,
+      //   minInventory: 1,
+      // };
+      // console.log("Fetched data is user");
+      // const products = await getAllProductsService(queryWithInventoryFilter);
+      // const filteredProducts = products.filter(
+      //   (product) => product.inventory > 0
+      // );
+      // res.send(filteredProducts);
+      console.log("fetched admin data");
+      const products = await getAllProductsService(req.query);
+      res.send(products);
+    } else {
+      // console.log("fetched admin data");
+      // const products = await getAllProductsService(req.query);
+      // res.send(products);
       const queryWithInventoryFilter = {
         ...req.query,
         minInventory: 1,
       };
+      console.log("Fetched data is user");
       const products = await getAllProductsService(queryWithInventoryFilter);
       const filteredProducts = products.filter(
         (product) => product.inventory > 0
       );
-      res.json(filteredProducts);
-    } else {
-      const products = await getAllProductsService(req.query);
-      res.json(products);
+      res.send(filteredProducts);
     }
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
