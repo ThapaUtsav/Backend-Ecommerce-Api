@@ -9,10 +9,13 @@ import orderRoutes from "./routes/order.routes.js";
 import fs from "fs";
 import path from "path";
 import cors from "cors";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Enable CORS **before** routes
 app.use(cors());
@@ -21,6 +24,7 @@ app.use(express.json());
 app.use("/api", router);
 app.use("/api/products", prodRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "../Uploads")));
 
 // Load OpenAPI spec from file once
 const openApiSpec = JSON.parse(

@@ -4,6 +4,7 @@ import path from "path";
 //storage configuration for multer
 const storage = multer.diskStorage({
   destination(req, file, cb) {
+    //photos location
     cb(null, "uploads/");
   },
   filename(req, file, cb) {

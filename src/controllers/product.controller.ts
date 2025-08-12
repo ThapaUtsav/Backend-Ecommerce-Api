@@ -15,7 +15,19 @@ import {
 
 // CREATE PRODUCT
 export const createProduct = async (req: Request, res: Response) => {
-  const validation = productCreationSchema.safeParse(req.body);
+  const imageFiles = req.files as Express.Multer.File[];
+  //file name to imageFIlename VARTEX.png to VARTEX
+  //if file.file.filedname give all the images name to image
+  const imageFilenames = imageFiles?.map((file) => file.filename) || [];
+  console.log("DEBUG FILE NAME:", imageFilenames);
+  const bodyWithImages = {
+    ...req.body,
+    // price: req.body.price,
+    // inventory: req.body.inventory,
+    images: imageFilenames,
+  };
+  console.log("DEBUGG:", bodyWithImages);
+  const validation = productCreationSchema.safeParse(bodyWithImages);
 
   if (!validation.success) {
     logger.error(
@@ -27,6 +39,8 @@ export const createProduct = async (req: Request, res: Response) => {
       errors: validation.error,
     });
   }
+
+  console.log(validation.data);
 
   try {
     const savedProduct = await createProductService(validation.data);

@@ -219,3 +219,147 @@
 [2025-08-08T08:16:44.141Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
 [2025-08-08T08:23:49.362Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
 [2025-08-08T08:24:17.973Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-11T08:30:39.884Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"24 inch monitor HIghquality Monitor","price":"199.99","category":"Electronics","inventory":"20","color":"Black","size":"24 inch","brand":"Vartex"} [
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "price"
+    ],
+    "message": "Invalid input: expected number, received string"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "inventory"
+    ],
+    "message": "Invalid input: expected number, received string"
+  }
+]
+[2025-08-11T08:30:57.277Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"24 inch monitor HIghquality Monitor","price":"199.99","category":"Electronics","inventory":"20","color":"Black","size":"24 inch","brand":"Vartex"} [
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "price"
+    ],
+    "message": "Invalid input: expected number, received string"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "inventory"
+    ],
+    "message": "Invalid input: expected number, received string"
+  }
+]
+[2025-08-11T08:34:04.017Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"Hight quality gaming monitor consisting of 1ms and 100hz refresh hertz","price":"199","category":"Electronics","inventory":"20","color":"Black","size":"24 Inch","brand":"Vartex"} [
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "price"
+    ],
+    "message": "Invalid input: expected number, received string"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "inventory"
+    ],
+    "message": "Invalid input: expected number, received string"
+  }
+]
+[2025-08-11T08:36:32.337Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"Hight quality gaming monitor consisting of 1ms and 100hz refresh hertz","price":"199","category":"Electronics","inventory":"20","color":"Black","size":"24 Inch","brand":"Vartex"} [
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "price"
+    ],
+    "message": "Invalid input: expected number, received string"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+      "inventory"
+    ],
+    "message": "Invalid input: expected number, received string"
+  }
+]
+[2025-08-11T08:40:35.348Z] ERROR: Error creating product: malformed array literal: "images-1754901635317.png,images-1754901635321.png"
+[2025-08-11T08:42:06.606Z] ERROR: Error creating product: malformed array literal: "images-1754901726559.png,images-1754901726561.png"
+[2025-08-11T08:42:09.431Z] ERROR: Error creating product: malformed array literal: "images-1754901729419.png,images-1754901729420.png"
+[2025-08-11T08:42:09.728Z] ERROR: Error creating product: malformed array literal: "images-1754901729713.png,images-1754901729715.png"
+[2025-08-11T08:42:09.975Z] ERROR: Error creating product: malformed array literal: "images-1754901729953.png,images-1754901729954.png"
+[2025-08-11T08:42:10.182Z] ERROR: Error creating product: malformed array literal: "images-1754901730147.png,images-1754901730148.png"
+[2025-08-11T08:42:10.358Z] ERROR: Error creating product: malformed array literal: "images-1754901730348.png,images-1754901730350.png"
+[2025-08-11T08:42:10.655Z] ERROR: Error creating product: malformed array literal: "images-1754901730612.png,images-1754901730613.png"
+[2025-08-11T08:42:11.208Z] ERROR: Error creating product: malformed array literal: "images-1754901731196.png,images-1754901731197.png"
+[2025-08-11T08:42:11.587Z] ERROR: Error creating product: malformed array literal: "images-1754901731577.png,images-1754901731579.png"
+[2025-08-11T08:44:58.519Z] ERROR: Error creating product: malformed array literal: "["images-1754901898461.png","images-1754901898464.png"]"
+[2025-08-11T08:45:01.648Z] ERROR: Error creating product: malformed array literal: "["images-1754901901636.png","images-1754901901638.png"]"
+[2025-08-11T08:45:02.068Z] ERROR: Error creating product: malformed array literal: "["images-1754901902053.png","images-1754901902055.png"]"
+[2025-08-11T08:45:02.930Z] ERROR: Error creating product: malformed array literal: "["images-1754901902896.png","images-1754901902897.png"]"
+[2025-08-11T08:45:03.130Z] ERROR: Error creating product: malformed array literal: "["images-1754901903113.png","images-1754901903115.png"]"
+[2025-08-11T08:45:03.318Z] ERROR: Error creating product: malformed array literal: "["images-1754901903299.png","images-1754901903300.png"]"
+[2025-08-11T08:49:05.441Z] ERROR: Error creating product: malformed array literal: "["images-1754902145368.png","images-1754902145370.png"]"
+[2025-08-11T08:49:40.909Z] ERROR: Error creating product: malformed array literal: "["images-1754902180746.png","images-1754902180748.png"]"
+[2025-08-11T08:51:59.533Z] ERROR: Error creating product: malformed array literal: "["images-1754902319477.png","images-1754902319480.png"]"
+[2025-08-11T08:53:26.556Z] ERROR: Error creating product: malformed array literal: "["images-1754902406533.png","images-1754902406536.png"]"
+[2025-08-11T08:54:47.931Z] ERROR: Error creating product: malformed array literal: "["images-1754902487901.png","images-1754902487904.png"]"
+[2025-08-11T09:02:38.613Z] ERROR: Error creating product: malformed array literal: "["images-1754902958581.png","images-1754902958584.png"]"
+[2025-08-11T09:03:42.528Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"Gaming Monitor consist of 1ms delay with 100 hz refresh hertz","price":"199","category":"Electronics","inventory":"20","color":"Black","size":"24 inch ","brand":"Vartex"} [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "images"
+    ],
+    "message": "Invalid input: expected array, received string"
+  }
+]
+[2025-08-11T09:04:02.160Z] ERROR: Error creating product: malformed array literal: "["images-1754903042126.png","images-1754903042130.png"]"
+[2025-08-11T09:04:28.658Z] ERROR: Error creating product: malformed array literal: "images-1754903068616.png,images-1754903068619.png"
+[2025-08-11T09:04:42.870Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"Gaming Monitor consist of 1ms delay with 100 hz refresh hertz","price":"199","category":"Electronics","inventory":"20","color":"Black","size":"24 inch ","brand":"Vartex"} [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "images"
+    ],
+    "message": "Invalid input: expected array, received string"
+  }
+]
+[2025-08-11T09:05:31.137Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"Gaming Monitor consist of 1ms delay with 100 hz refresh hertz","price":"199","category":"Electronics","inventory":"20","color":"Black","size":"24 inch ","brand":"Vartex"} [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "images"
+    ],
+    "message": "Invalid input: expected array, received string"
+  }
+]
+[2025-08-11T09:06:03.504Z] ERROR: Validation failed on product creation: {"name":"Vartex Gaming Monitor","description":"Gaming Monitor consist of 1ms delay with 100 hz refresh hertz","price":"199","category":"Electronics","inventory":"20","color":"Black","size":"24 inch ","brand":"Vartex"} [
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "images"
+    ],
+    "message": "Invalid input: expected array, received string"
+  }
+]
+[2025-08-11T09:08:31.388Z] ERROR: Error creating product: malformed array literal: "["images-1754903311357.png","images-1754903311361.png"]"
+[2025-08-11T09:13:31.783Z] ERROR: Error creating product: malformed array literal: "["images-1754903611752.png","images-1754903611756.png"]"
+[2025-08-11T09:15:05.128Z] ERROR: Error creating product: malformed array literal: "["images-1754903704977.png","images-1754903704979.png"]"
+[2025-08-11T09:16:22.057Z] ERROR: Error creating product: malformed array literal: "images-1754903782026.png,images-1754903782029.png"
+[2025-08-11T09:18:25.049Z] ERROR: Error creating product: malformed array literal: "images-1754903905013.png,images-1754903905016.png"
+[2025-08-11T09:19:40.169Z] ERROR: Error creating product: malformed array literal: "images-1754903980135.png,images-1754903980139.png"
+[2025-08-11T09:20:24.357Z] ERROR: Error creating product: malformed array literal: "images-1754904024321.png,images-1754904024324.png"
+[2025-08-11T09:22:26.650Z] ERROR: Error creating product: malformed array literal: "images-1754904146614.png,images-1754904146619.png"

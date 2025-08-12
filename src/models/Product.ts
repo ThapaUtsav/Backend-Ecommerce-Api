@@ -27,7 +27,7 @@ export class Product {
   @Column("int")
   inventory!: number;
 
-  @Column("simple-array") //for images
+  @Column("text", { array: true })
   images!: string[];
 
   @Column({ nullable: true, type: "varchar" })
