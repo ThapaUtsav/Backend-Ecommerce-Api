@@ -55,35 +55,39 @@ export const createProduct = async (req: Request, res: Response) => {
 // GET ALL PRODUCTS
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    if (req.user?.role == "admin") {
-      // const queryWithInventoryFilter = {
-      //   ...req.query,
-      //   minInventory: 1,
-      // };
-      // console.log("Fetched data is user");
-      // const products = await getAllProductsService(queryWithInventoryFilter);
-      // const filteredProducts = products.filter(
-      //   (product) => product.inventory > 0
-      // );
-      // res.send(filteredProducts);
-      console.log("fetched admin data");
-      const products = await getAllProductsService(req.query);
-      res.send(products);
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 5;
+    const offset = (page - 1) * limit;
+
+    const baseQuery = {
+      ...req.query,
+      limit,
+      offset,
+    };
+
+    let productsWithCount;
+
+    if (req.user?.role === "admin") {
+      productsWithCount = await getAllProductsService(baseQuery);
     } else {
-      // console.log("fetched admin data");
-      // const products = await getAllProductsService(req.query);
-      // res.send(products);
       const queryWithInventoryFilter = {
-        ...req.query,
+        ...baseQuery,
         minInventory: 1,
       };
-      console.log("Fetched data is user");
-      const products = await getAllProductsService(queryWithInventoryFilter);
-      const filteredProducts = products.filter(
-        (product) => product.inventory > 0
-      );
-      res.send(filteredProducts);
+      productsWithCount = await getAllProductsService(queryWithInventoryFilter);
     }
+
+    const totalPages = Math.ceil(productsWithCount.total / limit);
+
+    res.json({
+      data: productsWithCount.data,
+      pagination: {
+        page,
+        limit,
+        total: productsWithCount.total,
+        totalPages,
+      },
+    });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error("Error fetching products", { error: err });

@@ -15,8 +15,8 @@ import {
 import { ZodError } from "zod";
 import logger from "utils/logger.js";
 import { AppDataSource } from "config/.ormconfig.js";
-import { Order } from "models/Order.js";
 import { ValidationError } from "class-validator";
+import { Order } from "models/Order.js";
 
 //creation of order and linkage is done
 export const createOrder = async (req: Request, res: Response) => {
@@ -58,16 +58,33 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllOrders = async () => {
+export const getAllOrders = async (limit?: number, offset?: number) => {
   const orderRepo = AppDataSource.getRepository(Order);
-  return await orderRepo.find({
-    relations: ["user", "items", "items.product"],
-  });
+
+  const qb = orderRepo
+    .createQueryBuilder("order")
+    .leftJoinAndSelect("order.items", "items")
+    .leftJoinAndSelect("items.product", "product")
+    .leftJoinAndSelect("order.user", "user")
+    .orderBy("order.created_at", "DESC");
+
+  const total = await qb.getCount();
+
+  if (limit !== undefined) qb.take(limit);
+  if (offset !== undefined) qb.skip(offset);
+
+  const data = await qb.getMany();
+
+  return { data, total };
 };
 
 //view history of user products
 export const getMyOrders = async (req: Request, res: Response) => {
   try {
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 2;
+    const offset = (page - 1) * limit;
+
     const userId = req.user?.id;
     const userRole = req.user?.role;
 
@@ -76,18 +93,24 @@ export const getMyOrders = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Unauthorized: No user ID found" });
     }
 
-    let orders;
+    let result;
 
-    // If user is an admin, fetch all orders
     if (userRole === "admin") {
       console.log("Admin fetching all orders");
-      orders = await getAllOrders();
+      result = await getAllOrders(limit, offset);
     } else {
       console.log("User fetching own orders");
-      orders = await getOrdersByUser(userId);
+      result = await getOrdersByUser(userId, limit, offset);
     }
-
-    return res.json(orders);
+    return res.json({
+      data: result.data,
+      pagination: {
+        page,
+        limit,
+        total: result.total,
+        totalPages: Math.ceil(result.total / limit),
+      },
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Could not fetch orders" });

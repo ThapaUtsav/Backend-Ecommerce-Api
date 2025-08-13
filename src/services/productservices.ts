@@ -14,6 +14,13 @@ export const createProductService = async (data: Partial<Product>) => {
 export const getAllProductsService = async (query: any) => {
   const qb = productRepo.createQueryBuilder("product");
 
+  // Handle Inventory if empty
+  if (query.minInventory !== undefined) {
+    qb.andWhere("product.inventory > :minInventory", {
+      minInventory: Number(query.minInventory),
+    });
+  }
+
   Object.entries(query).forEach(([key, value]) => {
     if (typeof value !== "string") return;
     const cleanValue = value.trim();
@@ -26,13 +33,11 @@ export const getAllProductsService = async (query: any) => {
         lt: "<",
       };
 
-      //main search for the api
       qb.andWhere(`product.${field} ${dbOpMap[operator]} :${key}`, {
         [key]: Number(cleanValue),
       });
     }
 
-    //Partial search
     if (["name", "category", "brand", "color"].includes(key)) {
       qb.andWhere(`LOWER(product.${key}) LIKE LOWER(:${key})`, {
         [key]: `%${cleanValue}%`,
@@ -40,7 +45,7 @@ export const getAllProductsService = async (query: any) => {
     }
   });
 
-  //sorting and range
+  // sorting
   if (typeof query.sort === "string") {
     const [field, dirRaw] = query.sort.split("_");
     const direction = dirRaw.toLowerCase();
@@ -53,7 +58,20 @@ export const getAllProductsService = async (query: any) => {
     }
   }
 
-  return await qb.getMany();
+  // Get total count before pagination
+  const total = await qb.getCount();
+
+  // Apply pagination
+  if (query.limit !== undefined) {
+    qb.take(Number(query.limit));
+  }
+  if (query.offset !== undefined) {
+    qb.skip(Number(query.offset));
+  }
+
+  const data = await qb.getMany();
+
+  return { data, total };
 };
 
 //search by ID

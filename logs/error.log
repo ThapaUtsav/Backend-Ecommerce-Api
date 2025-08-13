@@ -338,3 +338,39 @@
 [2025-08-11T09:19:40.169Z] ERROR: Error creating product: malformed array literal: "images-1754903980135.png,images-1754903980139.png"
 [2025-08-11T09:20:24.357Z] ERROR: Error creating product: malformed array literal: "images-1754904024321.png,images-1754904024324.png"
 [2025-08-11T09:22:26.650Z] ERROR: Error creating product: malformed array literal: "images-1754904146614.png,images-1754904146619.png"
+[2025-08-13T05:46:00.418Z] ERROR: Validation failed on product creation: undefined [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "name"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "received": "NaN",
+    "path": [
+      "price"
+    ],
+    "message": "Invalid input: expected number, received NaN"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "received": "NaN",
+    "path": [
+      "inventory"
+    ],
+    "message": "Invalid input: expected number, received NaN"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "color"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
