@@ -4,7 +4,6 @@ import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
 import { OrderItem, OrderStatus } from "../models/Orderitem.js";
 import { User } from "../models/User.js";
-import logger from "utils/logger.js";
 
 // Repositories
 const orderRepo = AppDataSource.getRepository(Order);
@@ -60,11 +59,11 @@ export const getOrdersByUser = async (
   offset?: number
 ) => {
   const qb = orderRepo
-    .createQueryBuilder("order")
-    .leftJoinAndSelect("order.items", "items")
+    .createQueryBuilder("o")
+    .leftJoinAndSelect("o.items", "items")
     .leftJoinAndSelect("items.product", "product")
-    .where("order.userId = :userId", { userId })
-    .orderBy("order.created_at", "DESC");
+    .where("o.user_id = :userId", { userId })
+    .orderBy("o.created_at", "DESC");
 
   const total = await qb.getCount();
 
@@ -91,7 +90,7 @@ export const updateAllOrderItemsStatus = async (
   if (!order) throw new Error("Order not found");
 
   if (newStatus === OrderStatus.DONE && !isAdmin) {
-    throw new Error("Unauthorized: Only admin can mark DONE");
+    throw new Error("Unauthorized:  Only admin can mark DONE");
   }
 
   if (!isAdmin && order.user.id !== userId) {

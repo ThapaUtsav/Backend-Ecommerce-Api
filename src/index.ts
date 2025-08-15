@@ -17,6 +17,18 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const connectdb = async () => {
+  try {
+    await AppDataSource.initialize();
+    console.log("DB connected");
+  } catch (err) {
+    console.log("Db connection error:", err);
+    process.exit(1);
+  }
+};
+
+connectdb();
+
 // Enable CORS **before** routes
 app.use(cors());
 
@@ -44,17 +56,5 @@ app.use(
     },
   })
 );
-
-const connectdb = async () => {
-  try {
-    await AppDataSource.initialize();
-    console.log("DB connected");
-  } catch (err) {
-    console.log("Db connection error:", err);
-    process.exit(1);
-  }
-};
-
-connectdb();
 
 export default app;

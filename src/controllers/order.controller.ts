@@ -15,7 +15,6 @@ import {
 import { ZodError } from "zod";
 import logger from "utils/logger.js";
 import { AppDataSource } from "config/.ormconfig.js";
-import { ValidationError } from "class-validator";
 import { Order } from "models/Order.js";
 
 //creation of order and linkage is done
@@ -49,7 +48,7 @@ export const createOrder = async (req: Request, res: Response) => {
     if (err instanceof ZodError) {
       return res.status(400).json({ error: err.issues });
     }
-    if (err instanceof ValidationError) {
+    if (err) {
       return res
         .status(400)
         .json({ error: "Validation error cause while creation" });
@@ -96,10 +95,8 @@ export const getMyOrders = async (req: Request, res: Response) => {
     let result;
 
     if (userRole === "admin") {
-      console.log("Admin fetching all orders");
       result = await getAllOrders(limit, offset);
     } else {
-      console.log("User fetching own orders");
       result = await getOrdersByUser(userId, limit, offset);
     }
     return res.json({

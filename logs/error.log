@@ -374,3 +374,39 @@
     "message": "Invalid input: expected string, received undefined"
   }
 ]
+[2025-08-15T07:39:44.895Z] ERROR: Validation failed on product creation: {"email":"admin@example.com","password":"mypassword"} [
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "name"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "received": "NaN",
+    "path": [
+      "price"
+    ],
+    "message": "Invalid input: expected number, received NaN"
+  },
+  {
+    "expected": "number",
+    "code": "invalid_type",
+    "received": "NaN",
+    "path": [
+      "inventory"
+    ],
+    "message": "Invalid input: expected number, received NaN"
+  },
+  {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+      "color"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+  }
+]
