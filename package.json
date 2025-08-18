@@ -4,9 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --include ./src/* ./src/server.ts",
+    "dev": "tsx watch --include ./src/* ./src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "typeorm": "tsx node_modules/typeorm/cli.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest"
   },

@@ -59,13 +59,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
 export const getAllOrders = async (limit?: number, offset?: number) => {
   const orderRepo = AppDataSource.getRepository(Order);
-
-  const qb = orderRepo
-    .createQueryBuilder("order")
-    .leftJoinAndSelect("order.items", "items")
-    .leftJoinAndSelect("items.product", "product")
-    .leftJoinAndSelect("order.user", "user")
-    .orderBy("order.created_at", "DESC");
+  const qb = orderRepo.createQueryBuilder("order");
 
   const total = await qb.getCount();
 
@@ -95,8 +89,10 @@ export const getMyOrders = async (req: Request, res: Response) => {
     let result;
 
     if (userRole === "admin") {
+      console.log("Admin fetching all orders");
       result = await getAllOrders(limit, offset);
     } else {
+      console.log("User fetching own orders");
       result = await getOrdersByUser(userId, limit, offset);
     }
     return res.json({

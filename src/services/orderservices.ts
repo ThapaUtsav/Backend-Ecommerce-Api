@@ -72,7 +72,7 @@ export const getOrdersByUser = async (
 
   const data = await qb.getMany();
 
-  return { data, total };
+  return { data, total, qb };
 };
 
 // Admin Status change on DONE OR CANCEL
