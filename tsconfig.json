@@ -12,5 +12,9 @@
     "baseUrl": "./src",
     "typeRoots": ["./types", "./node_modules/@types"]
   },
-  "include": ["src", "jestpractice/jest.js", "jestpractice/jesttesting.test.js"]
+  "include": [
+    "src/**/*",
+    "jestpractice/jest.js",
+    "jestpractice/jesttesting.test.js"
+  ]
 }
