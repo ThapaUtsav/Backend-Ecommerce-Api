@@ -8,6 +8,7 @@ import {
 // import * as OrderService from "../services/orderservices.js";
 import {
   createOrderService,
+  deleteOrderService,
   getOrdersByUser,
   updateAllOrderItemsStatus,
   updateOrderItemStatus,
@@ -246,7 +247,22 @@ export const updateOrderItemStatusController = async (
 };
 
 //delete logic
-// export const deleteOrder = async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
-//   const valdiation_delete = productdeleteschema.safeParse(req.body);
-// };
+export const deleteOrder = async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  try {
+    const deleteOrder = await deleteOrderService(id);
+    if (!deleteOrder) {
+      logger.warn(`Order not found for deletion:ID${id}`);
+      return res.status(404).json({ message: "Product not Found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Order Not soft deleted", order: deleteOrder });
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error(`Error deleteing order ID${id}:${err.message}`, {
+      error: err,
+    });
+    res.status(500).json({ message: "Error deleteing order " });
+  }
+};

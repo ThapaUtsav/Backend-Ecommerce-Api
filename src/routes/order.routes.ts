@@ -1,4 +1,5 @@
 // routes/orderRoutes.ts
+import { deleteProduct } from "controllers/product.controller.js";
 import {
   createOrder,
   getMyOrders,
@@ -25,4 +26,5 @@ router.put(
 );
 
 //order deletion
+router.delete("/:id", authenticateToken, deleteProduct);
 export default router;

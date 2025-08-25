@@ -159,19 +159,11 @@ export const updateOrderItemStatus = async (
 //deletion of orders
 //user side deltion will stay a audit of the product
 //admin side will comepletely delete it
-// export const deleteProductService = async (
-//   id: number,
-// data: Partial<Order>;
-// ) => {
-//   const order = await orderRepo.findOne({ where: { id } });
-//   if (!order) return null;
+export const deleteOrderService = async (id: number) => {
+  const order = await orderRepo.findOne({ where: { id } });
+  if (!order) return null;
 
-//   orderRepo.merge(order, data);
-//   return await orderRepo.save(order);
-// };
-
-//trying without the postman data entry for soft delete
-// export const deleteOrderService = async (id: number) => {
-//   const order = await orderRepo.findOne({ where: { id } });
-//   if (!order) return null;
-// };
+  order.deletion_status = true;
+  await orderRepo.save(order);
+  return order;
+};

@@ -2,6 +2,7 @@
 import { Router } from "express";
 import {
   createProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
   updateProduct,
@@ -38,4 +39,5 @@ router.put(
   // validateBody(productCreationSchema), //valdiation arleady done in controller
   updateProduct
 );
+router.delete("/:id", authenticateToken, authorizeAdmin, deleteProduct);
 export default router;

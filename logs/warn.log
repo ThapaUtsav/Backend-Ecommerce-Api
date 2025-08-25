@@ -214,3 +214,4 @@
     "message": "Invalid input: expected string, received undefined"
   }
 ]
+[2025-08-25T08:52:07.672Z] ERROR: Error fetching products

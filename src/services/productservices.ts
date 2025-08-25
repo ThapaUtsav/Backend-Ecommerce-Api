@@ -19,6 +19,11 @@ export const getAllProductsService = async (query: any) => {
       minInventory: Number(query.minInventory),
     });
   }
+  if (query.deletion_status_products === true) {
+    qb.andWhere("product.deletion_status_products=true");
+  } else {
+    qb.andWhere("product.deletion_status_products=false");
+  }
 
   Object.entries(query).forEach(([key, value]) => {
     if (typeof value !== "string") return;
