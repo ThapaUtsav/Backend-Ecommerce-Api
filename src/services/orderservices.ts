@@ -4,6 +4,7 @@ import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
 import { OrderItem, OrderStatus } from "../models/Orderitem.js";
 import { User } from "../models/User.js";
+import { authorizeAdmin } from "middleware/authadmin.js";
 
 // Repositories
 const orderRepo = AppDataSource.getRepository(Order);
@@ -58,17 +59,14 @@ export const getOrdersByUser = async (
   limit?: number,
   offset?: number
 ) => {
-  const qb = orderRepo
-    .createQueryBuilder("o")
-    .leftJoinAndSelect("o.items", "items")
-    .leftJoinAndSelect("items.product", "product")
-    .where("o.user_id = :userId", { userId })
-    .orderBy("o.created_at", "DESC");
+  const qb = orderRepo.createQueryBuilder("order");
 
   const total = await qb.getCount();
 
   if (limit !== undefined) qb.take(limit);
   if (offset !== undefined) qb.skip(offset);
+  qb.leftJoinAndSelect("order.items", "items");
+  qb.leftJoinAndSelect("items.product", "product");
 
   const data = await qb.getMany();
 
@@ -79,8 +77,7 @@ export const getOrdersByUser = async (
 export const updateAllOrderItemsStatus = async (
   userId: number,
   orderId: number,
-  newStatus: OrderStatus,
-  isAdmin: boolean
+  newStatus: OrderStatus
 ) => {
   const order = await orderRepo.findOne({
     where: { id: orderId },
@@ -89,11 +86,11 @@ export const updateAllOrderItemsStatus = async (
 
   if (!order) throw new Error("Order not found");
 
-  if (newStatus === OrderStatus.DONE && !isAdmin) {
+  if (newStatus === OrderStatus.DONE && !authorizeAdmin) {
     throw new Error("Unauthorized:  Only admin can mark DONE");
   }
 
-  if (!isAdmin && order.user.id !== userId) {
+  if (!authorizeAdmin && order.user.id !== userId) {
     throw new Error("Unauthorized: Cannot update this order");
   }
 
@@ -123,8 +120,7 @@ export const updateAllOrderItemsStatus = async (
 export const updateOrderItemStatus = async (
   userId: number,
   orderItemId: number,
-  newStatus: OrderStatus,
-  isAdmin: boolean
+  newStatus: OrderStatus
 ) => {
   const orderItem = await orderItemRepo.findOne({
     where: { id: orderItemId },
@@ -133,11 +129,11 @@ export const updateOrderItemStatus = async (
 
   if (!orderItem) throw new Error("Order item not found");
 
-  if (newStatus === OrderStatus.DONE && !isAdmin) {
+  if (newStatus === OrderStatus.DONE && !authorizeAdmin) {
     throw new Error("Unauthorized: Only admin can mark DONE");
   }
 
-  if (!isAdmin && orderItem.order.user.id !== userId) {
+  if (!authorizeAdmin && orderItem.order.user.id !== userId) {
     throw new Error("Unauthorized: Not your order item");
   }
 
@@ -154,10 +150,28 @@ export const updateOrderItemStatus = async (
   }
 
   orderItem.status = newStatus;
-  const updatedItem = await orderItemRepo.save(orderItem);
-
   return {
     message: `Order item ${orderItemId} updated to ${newStatus}`,
     revertedItemsUser: revertedItemsUser.length,
   };
 };
+
+//deletion of orders
+//user side deltion will stay a audit of the product
+//admin side will comepletely delete it
+// export const deleteProductService = async (
+//   id: number,
+// data: Partial<Order>;
+// ) => {
+//   const order = await orderRepo.findOne({ where: { id } });
+//   if (!order) return null;
+
+//   orderRepo.merge(order, data);
+//   return await orderRepo.save(order);
+// };
+
+//trying without the postman data entry for soft delete
+// export const deleteOrderService = async (id: number) => {
+//   const order = await orderRepo.findOne({ where: { id } });
+//   if (!order) return null;
+// };

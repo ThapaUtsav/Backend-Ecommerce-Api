@@ -28,6 +28,9 @@ export class Order {
   })
   items!: OrderItem[];
 
+  @Column({ default: false, type: "boolean" })
+  deletion_status!: boolean;
+
   @CreateDateColumn()
   created_at!: Date;
 

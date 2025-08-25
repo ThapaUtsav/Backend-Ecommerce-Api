@@ -1,4 +1,3 @@
-// src/services/productService.ts
 import { Product } from "../models/Product.js";
 import { AppDataSource } from "../config/.ormconfig.js";
 
@@ -96,6 +95,7 @@ export const deleteProductService = async (id: number) => {
   const product = await productRepo.findOne({ where: { id } });
   if (!product) return null;
 
-  await productRepo.remove(product);
+  product.deletion_status_products = true;
+  await productRepo.save(product);
   return product;
 };

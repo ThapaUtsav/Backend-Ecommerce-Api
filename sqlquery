@@ -54,3 +54,8 @@ ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'pending';
 ALTER TABLE products
 ADD COLUMN created_by INT,
 ADD CONSTRAINT fk_created_by FOREIGN KEY (created_by) REFERENCES users(id);
+
+
+--Using this for both products and order for soft delete status archieved but not premanently deleted
+ALTER TABLE products
+ADD COLUMN deletion_status_products BOOLEAN NOT NULL DEFAULT false;

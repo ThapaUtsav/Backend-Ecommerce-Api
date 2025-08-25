@@ -2,15 +2,16 @@ import { Request, Response } from "express";
 import logger from "../utils/logger.js";
 import {
   productCreationSchema,
-  productSchema,
+  productdeleteschema,
+  productupdateSchema,
 } from "../validators/product.validation.js";
 
 import {
   createProductService,
+  deleteProductService,
   getAllProductsService,
   getProductByIdService,
   updateProductService,
-  deleteProductService,
 } from "../services/productservices.js";
 
 // CREATE PRODUCT
@@ -54,25 +55,19 @@ export const getAllProducts = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 5;
     const offset = (page - 1) * limit;
-
+    const isAdmin = req.user?.role == "admin";
     const baseQuery = {
       ...req.query,
       limit,
       offset,
     };
-
-    let productsWithCount;
-
-    if (req.user?.role === "admin") {
-      productsWithCount = await getAllProductsService(baseQuery);
-    } else {
-      const queryWithInventoryFilter = {
-        ...baseQuery,
-        minInventory: 1,
-      };
-      productsWithCount = await getAllProductsService(queryWithInventoryFilter);
-    }
-
+    const query = isAdmin
+      ? baseQuery
+      : {
+          ...baseQuery,
+          minInventory: 1,
+        };
+    const productsWithCount = await getAllProductsService(query);
     const totalPages = Math.ceil(productsWithCount.total / limit);
 
     res.json({
@@ -112,7 +107,7 @@ export const getProductById = async (req: Request, res: Response) => {
 // UPDATE PRODUCT
 export const updateProduct = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const validation = productSchema.safeParse(req.body);
+  const validation = productupdateSchema.safeParse(req.body);
 
   if (!validation.success) {
     logger.error(
@@ -122,7 +117,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       validation.error
     );
     return res.status(400).json({
-      message: "Validation error",
+      message: "Validation error on PRoduct",
       errors: validation.error,
     });
   }
@@ -133,7 +128,9 @@ export const updateProduct = async (req: Request, res: Response) => {
       logger.warn(`Product not found for update: ID ${id}`);
       return res.status(404).json({ message: "Product not found" });
     }
-    res.json(updatedProduct);
+    res
+      .status(200)
+      .json({ message: "Product deleted", product: updatedProduct });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error(`Error updating product ID ${id}: ${err.message}`, {
@@ -143,23 +140,23 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-// DELETE PRODUCT
+// DELETE PRODUCTS
 export const deleteProduct = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
-    const deletedProduct = await deleteProductService(id);
-    if (!deletedProduct) {
+    const deleteProduct = await deleteProductService(id);
+    if (!deleteProduct) {
       logger.warn(`Product not found for deletion: ID ${id}`);
       return res.status(404).json({ message: "Product not found" });
     }
     res
       .status(200)
-      .json({ message: "Product deleted", product: deletedProduct });
+      .json({ message: "Product soft deleted", product: deleteProduct });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error(String(error));
     logger.error(`Error deleting product ID ${id}: ${err.message}`, {
       error: err,
     });
-    res.status(500).json({ message: "Error deleting product" });
+    res.status(500).json({ message: "Error delteing product" });
   }
 };

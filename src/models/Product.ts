@@ -1,4 +1,5 @@
 //OI HALNA NA BIRSI order items if not in db
+import { boolean } from "joi";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -38,6 +39,9 @@ export class Product {
 
   @Column({ nullable: true, type: "varchar" })
   brand?: string;
+
+  @Column({ default: false, type: "boolean" })
+  deletion_status_products!: boolean;
 
   @CreateDateColumn()
   created_at!: Date;

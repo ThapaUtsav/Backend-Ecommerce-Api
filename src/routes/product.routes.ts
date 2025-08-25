@@ -5,7 +5,6 @@ import {
   getAllProducts,
   getProductById,
   updateProduct,
-  deleteProduct,
 } from "../controllers/product.controller.js";
 import { validateBody } from "../middleware/validate.js"; //validate before getting to product
 // import { productCreationSchema } from "../validators/product.validation.js";
@@ -39,5 +38,4 @@ router.put(
   // validateBody(productCreationSchema), //valdiation arleady done in controller
   updateProduct
 );
-router.delete("/:id", authenticateToken, authorizeAdmin, deleteProduct);
 export default router;

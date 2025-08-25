@@ -22,3 +22,8 @@ export const updateOrderStatusSchema = z.object({
 export const updateOrderItemSchema = z.object({
   status: z.enum(["CANCELLED"]),
 });
+
+//delete schema for status updated
+export const orderdeleteschema = z.object({
+  delete: z.literal(false),
+});

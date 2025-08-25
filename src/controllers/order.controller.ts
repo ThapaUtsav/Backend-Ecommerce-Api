@@ -16,6 +16,8 @@ import { ZodError } from "zod";
 import logger from "utils/logger.js";
 import { AppDataSource } from "config/.ormconfig.js";
 import { Order } from "models/Order.js";
+import { authorizeAdmin } from "middleware/authadmin.js";
+import { productdeleteschema } from "validators/product.validation.js";
 
 //creation of order and linkage is done
 export const createOrder = async (req: Request, res: Response) => {
@@ -89,11 +91,9 @@ export const getMyOrders = async (req: Request, res: Response) => {
     let result;
 
     if (userRole === "admin") {
-      console.log("Admin fetching all orders");
-      result = await getAllOrders(limit, offset);
-    } else {
-      console.log("User fetching own orders");
       result = await getOrdersByUser(userId, limit, offset);
+    } else {
+      result = await getAllOrders(limit, offset);
     }
     return res.json({
       data: result.data,
@@ -118,7 +118,6 @@ export const updateOrderStatusController = async (
   try {
     // Early validation checks
     const userId = req.user?.id;
-    const isAdmin = req.user?.role === "admin";
     const orderId = parseInt(req.params.orderId);
 
     // Validate order ID first
@@ -144,16 +143,11 @@ export const updateOrderStatusController = async (
       orderId,
       newStatus: status,
       userId,
-      isAdmin,
+      authorizeAdmin,
     });
 
     try {
-      const result = await updateAllOrderItemsStatus(
-        userId,
-        orderId,
-        status,
-        isAdmin
-      );
+      const result = await updateAllOrderItemsStatus(userId, orderId, status);
 
       // Successful update logging
       logger.info("Order status updated successfully", {
@@ -235,7 +229,6 @@ export const updateOrderItemStatusController = async (
     }
 
     const userId = req.user?.id;
-    const isAdmin = req.user?.role === "admin";
     const { status } = req.body;
     if (!status) {
       return res.status(400).json({
@@ -243,12 +236,7 @@ export const updateOrderItemStatusController = async (
       });
     }
 
-    const updatedItem = await updateOrderItemStatus(
-      userId,
-      itemId,
-      status,
-      isAdmin
-    );
+    const updatedItem = await updateOrderItemStatus(userId, itemId, status);
 
     res.status(200).json(updatedItem);
   } catch (error) {
@@ -256,3 +244,9 @@ export const updateOrderItemStatusController = async (
     res.status(400).json({ error: (error as Error).message });
   }
 };
+
+//delete logic
+// export const deleteOrder = async (req: Request, res: Response) => {
+//   const id = parseInt(req.params.id);
+//   const valdiation_delete = productdeleteschema.safeParse(req.body);
+// };
