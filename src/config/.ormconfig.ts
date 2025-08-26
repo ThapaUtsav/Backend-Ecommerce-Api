@@ -1,9 +1,6 @@
 import { DataSource } from "typeorm";
-import { User } from "../models/User.js";
-import { Product } from "../models/Product.js";
-import { Order } from "../models/Order.js";
+
 import dotenv from "dotenv";
-import { OrderItem } from "models/Orderitem.js";
 
 dotenv.config();
 export const AppDataSource = new DataSource({
@@ -15,5 +12,6 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: ["src/models/*.ts"],
+  entities: ["src/models/*.js"],
+  migrations: ["src/migrations/*.js"],
 });

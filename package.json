@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
@@ -28,7 +29,6 @@
     "swagger": "^0.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "typeorm": "^0.3.25",
     "winston": "^3.17.0",
     "zod": "^4.0.10"
   },
@@ -43,7 +43,7 @@
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
-    "@types/node": "^24.0.14",
+    "@types/node": "^24.3.0",
     "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^9.31.0",
     "globals": "^16.3.0",
@@ -52,6 +52,7 @@
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.20.3",
+    "typeorm": "^0.3.26",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.37.0"
   },
