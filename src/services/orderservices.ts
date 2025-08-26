@@ -53,7 +53,7 @@ export const createOrderService = async (
   return savedOrder;
 };
 
-// Get Orders by User with pagination
+// Get Orders by User with pagination for admin
 export const getOrdersByUser = async (
   userId: string,
   limit?: number,
@@ -62,7 +62,6 @@ export const getOrdersByUser = async (
   const qb = orderRepo.createQueryBuilder("order");
 
   const total = await qb.getCount();
-
   if (limit !== undefined) qb.take(limit);
   if (offset !== undefined) qb.skip(offset);
   qb.leftJoinAndSelect("order.items", "items");
@@ -71,6 +70,72 @@ export const getOrdersByUser = async (
   const data = await qb.getMany();
 
   return { data, total, qb };
+};
+
+//this is for users private order to see their private orders
+export const getOrdersByUsers = async (
+  userId: number,
+  limit?: number,
+  offset?: number
+) => {
+  const orderRepo = AppDataSource.getRepository(Order);
+
+  // Count total orders for the user
+  const total = await orderRepo.count({ where: { user_id: userId } });
+
+  // Fetch orders with items and products for the user
+  const qb = orderRepo
+    .createQueryBuilder("order")
+    .where("order.user_id = :user_id", { user_id: userId })
+    .leftJoinAndSelect("order.items", "items")
+    .leftJoinAndSelect("items.product", "product");
+
+  if (limit !== undefined) qb.take(limit);
+  if (offset !== undefined) qb.skip(offset);
+
+  const data = await qb.getMany();
+
+  return { data, total };
+};
+
+// Update Single Order for user
+export const updateOrderItemStatus = async (
+  userId: number,
+  orderItemId: number,
+  newStatus: OrderStatus
+) => {
+  const orderItem = await orderItemRepo.findOne({
+    where: { id: orderItemId },
+    relations: ["order", "order.user", "product"],
+  });
+
+  if (!orderItem) throw new Error("Order item not found");
+
+  if (newStatus === OrderStatus.DONE && !authorizeAdmin) {
+    throw new Error("Unauthorized: Only admin can mark DONE");
+  }
+
+  if (!authorizeAdmin && orderItem.order.user.id !== userId) {
+    throw new Error("Unauthorized: Not your order item");
+  }
+
+  const revertedItemsUser: { product: Product; quantity: number }[] = [];
+
+  if (
+    newStatus === OrderStatus.CANCELLED &&
+    orderItem.status !== OrderStatus.CANCELLED
+  ) {
+    const product = orderItem.product;
+    product.inventory += orderItem.quantity;
+    await productRepo.save(product);
+    revertedItemsUser.push({ product, quantity: orderItem.quantity });
+  }
+
+  orderItem.status = newStatus;
+  return {
+    message: `Order item ${orderItemId} updated to ${newStatus}`,
+    revertedItemsUser: revertedItemsUser.length,
+  };
 };
 
 // Admin Status change on DONE OR CANCEL
@@ -113,46 +178,6 @@ export const updateAllOrderItemsStatus = async (
   return {
     message: `All items in order ${orderId} updated to ${newStatus}`,
     revertedItems: revertedItems.length,
-  };
-};
-
-// Update Single Order for user
-export const updateOrderItemStatus = async (
-  userId: number,
-  orderItemId: number,
-  newStatus: OrderStatus
-) => {
-  const orderItem = await orderItemRepo.findOne({
-    where: { id: orderItemId },
-    relations: ["order", "order.user", "product"],
-  });
-
-  if (!orderItem) throw new Error("Order item not found");
-
-  if (newStatus === OrderStatus.DONE && !authorizeAdmin) {
-    throw new Error("Unauthorized: Only admin can mark DONE");
-  }
-
-  if (!authorizeAdmin && orderItem.order.user.id !== userId) {
-    throw new Error("Unauthorized: Not your order item");
-  }
-
-  const revertedItemsUser: { product: Product; quantity: number }[] = [];
-
-  if (
-    newStatus === OrderStatus.CANCELLED &&
-    orderItem.status !== OrderStatus.CANCELLED
-  ) {
-    const product = orderItem.product;
-    product.inventory += orderItem.quantity;
-    await productRepo.save(product);
-    revertedItemsUser.push({ product, quantity: orderItem.quantity });
-  }
-
-  orderItem.status = newStatus;
-  return {
-    message: `Order item ${orderItemId} updated to ${newStatus}`,
-    revertedItemsUser: revertedItemsUser.length,
   };
 };
 

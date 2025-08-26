@@ -456,3 +456,4 @@
 [2025-08-25T08:45:05.365Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
 [2025-08-25T08:45:05.370Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
 [2025-08-25T08:52:07.672Z] ERROR: Error fetching products
+[2025-08-26T04:26:24.566Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}

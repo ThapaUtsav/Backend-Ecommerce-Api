@@ -10,6 +10,7 @@ import {
   createOrderService,
   deleteOrderService,
   getOrdersByUser,
+  getOrdersByUsers,
   updateAllOrderItemsStatus,
   updateOrderItemStatus,
 } from "../services/orderservices.js";
@@ -18,7 +19,6 @@ import logger from "utils/logger.js";
 import { AppDataSource } from "config/.ormconfig.js";
 import { Order } from "models/Order.js";
 import { authorizeAdmin } from "middleware/authadmin.js";
-import { productdeleteschema } from "validators/product.validation.js";
 
 //creation of order and linkage is done
 export const createOrder = async (req: Request, res: Response) => {
@@ -60,19 +60,20 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllOrders = async (limit?: number, offset?: number) => {
-  const orderRepo = AppDataSource.getRepository(Order);
-  const qb = orderRepo.createQueryBuilder("order");
+//this was the default get all orders without pagination
+// export const getAllOrders = async (limit?: number, offset?: number) => {
+//   const orderRepo = AppDataSource.getRepository(Order);
+//   const qb = orderRepo.createQueryBuilder("order");
 
-  const total = await qb.getCount();
+//   const total = await qb.getCount();
 
-  if (limit !== undefined) qb.take(limit);
-  if (offset !== undefined) qb.skip(offset);
+//   if (limit !== undefined) qb.take(limit);
+//   if (offset !== undefined) qb.skip(offset);
 
-  const data = await qb.getMany();
+//   const data = await qb.getMany();
 
-  return { data, total };
-};
+//   return { data, total };
+// };
 
 //view history of user products
 export const getMyOrders = async (req: Request, res: Response) => {
@@ -94,7 +95,7 @@ export const getMyOrders = async (req: Request, res: Response) => {
     if (userRole === "admin") {
       result = await getOrdersByUser(userId, limit, offset);
     } else {
-      result = await getAllOrders(limit, offset);
+      result = await getOrdersByUsers(userId, limit, offset);
     }
     return res.json({
       data: result.data,
