@@ -457,3 +457,24 @@
 [2025-08-25T08:45:05.370Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
 [2025-08-25T08:52:07.672Z] ERROR: Error fetching products
 [2025-08-26T04:26:24.566Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-08-27T08:11:08.216Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:11:08.225Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:12:24.172Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:13:06.002Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:13:06.392Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:13:06.626Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:13:06.766Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:13:15.973Z] INFO: Admin login attempt: {"email":"user@example.com","password":"mypassword"}
+[2025-08-27T08:13:29.703Z] INFO: Admin login attempt: {"email":"userr@example.com","password":"mypassword"}
+[2025-08-27T08:16:07.104Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:17:17.514Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:17:31.150Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:19:24.893Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:34.254Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:35.052Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:35.240Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:35.393Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:42.319Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:42.816Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:20:43.010Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
+[2025-08-27T08:22:00.330Z] INFO: Admin login attempt: {"email":"admin@example.com","password":"mypassword"}
