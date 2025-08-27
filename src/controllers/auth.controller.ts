@@ -14,13 +14,10 @@ export const registerUser = async (req: Request, res: Response) => {
   const { email, password, role } = req.body;
   try {
     const existing = await userRepo.findOneBy({ email });
-
-    //409 for  conflict error
     if (existing) return res.status(409).json({ message: "USer Exists" });
 
     //hashing using bcrypt //Try argon2 later utsav
     const hashed = await bcrypt.hash(password, 10);
-    //
     const user = userRepo.create({ email, password: hashed, role });
     await userRepo.save(user);
   } catch (err) {

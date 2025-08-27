@@ -7,7 +7,7 @@ import logger from "utils/logger.js";
 const orderItemRepo = AppDataSource.getRepository(OrderItem);
 const productRepo = AppDataSource.getRepository(Product);
 
-// Cron job: runs every 10 seconds for demo purposes (adjust as needed)
+// Cron job: runs every 10 seconds changes can be applied for testing purposes where 0 */12 * * * * will make it 12 hours
 cron.schedule("*/10 * * * * *", async () => {
   logger.info("Running cron job to check pending orders...");
 
@@ -22,10 +22,10 @@ cron.schedule("*/10 * * * * *", async () => {
 
     for (const item of pendingItems) {
       const createdAt = new Date(item.order.created_at);
-      const diff = (now.getTime() - createdAt.getTime()) / 1000; // seconds
+      const diff = (now.getTime() - createdAt.getTime()) / 1000;
 
       if (diff > 30) {
-        // Cancel it and revert inventory
+        // Cancel it and revert inventory changes on product Product<Order>
         item.status = OrderStatus.CANCELLED;
         item.product.inventory += item.quantity;
 
