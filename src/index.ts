@@ -3,6 +3,9 @@ import "reflect-metadata";
 import app from "./server.js";
 import { ENV } from "const/env.js";
 import { AppDataSource } from "config/.ormconfig.js";
+//cron enable
+// import "./cron/crontest.js";
+
 //PORT called from the .env dai le milako const ma xa condition if u want
 const PORT = ENV.PORT;
 //initialize the migration here
