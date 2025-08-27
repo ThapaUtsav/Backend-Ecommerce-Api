@@ -84,11 +84,7 @@ export const getOrdersByUsers = async (
   const total = await orderRepo.count({ where: { user_id: userId } });
 
   // Fetch orders with items and products for the user
-  const qb = orderRepo
-    .createQueryBuilder("order")
-    .where("order.user_id = :user_id", { user_id: userId })
-    .leftJoinAndSelect("order.items", "items")
-    .leftJoinAndSelect("items.product", "product");
+  const qb = orderRepo.createQueryBuilder("order");
 
   if (limit !== undefined) qb.take(limit);
   if (offset !== undefined) qb.skip(offset);
